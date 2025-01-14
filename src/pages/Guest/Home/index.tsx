@@ -1,63 +1,29 @@
-
-
-
-
+import { CardsCompanies } from "../../../components/Guest/Home/CardsCompanies";
+import { SearchSection } from "../../../components/Guest/Home/SearchSection";
+import { Description } from "../../../components/Guest/Home/Description";
+import { Plans } from "../../../components/Guest/Home/Plans";
+import Sponsors from "../../../components/Guest/Home/Sponsors";
+import { CardHome } from '../../../components/Guest/Home/CardHome'
 function Home() {
 
-    function orangeText(text: string) {
-        return (
-            <span className="text-[#F57C00]">{text}</span>
-        )
-    }
-
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-
-        alert(e.target.innerHTML);
-    }
-
-    const handleOnChange = (e: any) => {
-        e.preventDefault();
-
-        alert(e.target.value);
-    }
-
     return (
-        <div className="mt-20 flex flex-col h-full justify-center items-center w-full">
-            <div className="flex w-[90%] justify-between items-center ">
+        <div className="lg:pt-19 pt-16 max-w-[100vw] grid gap-10">
 
-                <div className="flex flex-col gap-8 w-[40%]">
-                    <h1 className="text-5xl font-bold leading-tight">Busque {orangeText('e')} acesse {orangeText('à')} serviços {orangeText('essenciais')}.</h1>
+            <SearchSection />
 
-                    <form onSubmit={(e) => handleSubmit(e)} className="flex items-center gap-2 text-sm text-black rounded-full bg-white p-2 w-[100%]">
+            <div className="md:w-full w-[100vw] flex flex-col justify-center items-center">
+                <div className="flex flex-col px-4 lg:px-0 gap-20 lg:w-[88%] w-full items-center ">
 
-                        <input
-                            type="search"
-                            name="search"
-                            id=""
-                            onChange={(e) => handleOnChange(e)}
-                            className="p-2 w-[72%] border rounded-full border-amber-500 text-black "
-                        />
+                    <CardsCompanies />
 
-                        <button type="submit" className='bg-gradient-to-r font-semibold hover:scale-105 duration-500 cursor-pointer from-[#F57C00] to-[#FFCA28] py-2 px-8 rounded-full text-white text-sm'>
-                            <p>Pesquisar</p>
-                        </button>
+                    <Description />
 
-                    </form>
+                    <Plans />
 
-                    <p>Listamos todas as entidades que ministram o serviço que procuras</p>
+                    <CardHome />
+
+                    <Sponsors />
                 </div>
-
-                <div>
-                    <img
-                        src="/logo_wanna_pro.svg"
-                        alt="Logo da Wanna Pro"
-                        width={0}
-                        height={0}
-                        className="w-[60px] h-8 md:h-72 md:w-[120px] lg:w-[320px] "
-                    />
-                </div>
-
             </div>
         </div>
     )
