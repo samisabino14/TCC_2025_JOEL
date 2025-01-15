@@ -118,7 +118,7 @@ export const SearchSection = () => {
             const filteredResults = storedServices.filter((service: ServiceProps) =>
                 service.name.toLowerCase().includes(term.toLowerCase())
             );
-
+            
             if (filteredResults.length > 0) {
                 // Se houver resultados no filtro local, usa-os
                 setResults(filteredResults);

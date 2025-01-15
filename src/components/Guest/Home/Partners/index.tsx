@@ -2,9 +2,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 
 
-export default function Sponsors() {
+export default function Partners() {
 
-  const sponsors = [
+  const partners = [
     {
       id: 1,
       name: "",
@@ -62,7 +62,7 @@ export default function Sponsors() {
 
       <h1 className="text-xl text-center font-semibold">Parceiros</h1>
 
-      {sponsors?.length > 0 ? (
+      {partners?.length > 0 ? (
         <Swiper
           modules={[Autoplay]}
           spaceBetween={10}
@@ -96,7 +96,7 @@ export default function Sponsors() {
           }}
           className="w-full py-2"
         >
-          {sponsors.map((sponsor, index) => (
+          {partners.map((partner, index) => (
             <SwiperSlide
               key={index}
               style={{ width: "auto" }} // Ajusta para caber dinamicamente
@@ -106,8 +106,8 @@ export default function Sponsors() {
               >
 
                 <img
-                  src={sponsor.image}
-                  alt={`Logo da empresa ${sponsor.name}`}
+                  src={partner.image}
+                  alt={`Logo da empresa ${partner.name}`}
                   className="h-20 dark:bg-none p-2"
                 />
 

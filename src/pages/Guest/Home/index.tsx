@@ -2,7 +2,7 @@ import { CardsCompanies } from "../../../components/Guest/Home/CardsCompanies";
 import { SearchSection } from "../../../components/Guest/Home/SearchSection";
 import { Description } from "../../../components/Guest/Home/Description";
 import { Plans } from "../../../components/Guest/Home/Plans";
-import Sponsors from "../../../components/Guest/Home/Sponsors";
+import Partners from "../../../components/Guest/Home/Partners";
 import { CardHome } from '../../../components/Guest/Home/CardHome'
 function Home() {
 
@@ -22,7 +22,7 @@ function Home() {
 
                     <CardHome />
 
-                    <Sponsors />
+                    <Partners />
                 </div>
             </div>
         </div>

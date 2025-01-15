@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { parseCookies } from 'nookies'
 
 import { AuthTokenError } from './errors/AuthTokenError';
+import { signOut } from '../contexts/AuthContext';
 //import { signOut } from '../contexts/AuthContext';
 
 export const setupAPIClient = (context = undefined) => {
@@ -14,11 +15,11 @@ export const setupAPIClient = (context = undefined) => {
         baseURL: 'http://localhost:5000',
         //withCredentials: true,
         headers: {
-            Authorization: `Bearer ${cookies['@authlip2022.token']}`
+            Authorization: `Bearer ${cookies['@wanna@pro_25.token']}`
         }
     })
 
-    api.interceptors.response.use(response => {
+    api.interceptors.response.use((response) => {
 
         return response;
 
