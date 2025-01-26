@@ -1,26 +1,59 @@
-import { useContext } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { parseCookies } from 'nookies';
-import Sidebar from '../../components/Private/Sidebar';
+import Sidebar from '../../hooks/Private/Sidebar';
+import Loading from '../../components/Loading';
+import returnRole from './ReturnRole';
+
+
 
 function Private() {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const location = useLocation(); // Para verificar a rota atual
+    const [loading, setLoading] = useState(true);
 
-    const { '@wanna@pro_25.token': token } = parseCookies();
+    useEffect(() => {
+        // Se não há token, redirecione para o login
+        if (user && !user?.token) {
+            navigate('/login');
+            return;
+        }
 
-    if (!token) return <Navigate to="/login" />
+        // Aguarda o usuário ser carregado
+        if (!user) return;
+        let rolePath;
+        
+        user.Roles.map((role) => {
+            rolePath = returnRole(role.designation);
+        })
 
+        // Se o usuário não está na rota correta, redirecione
+        if (!location.pathname.includes(`/dashboard/${rolePath}`)) {
+            navigate(`/dashboard/${rolePath}`);
+        }
+
+        setLoading(false); // Indica que o carregamento terminou
+    }, [user, navigate, location]);
+
+    if (loading || !user) {
+        // Exibe um indicador de carregamento enquanto verifica a autenticação
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loading size={10} />
+            </div>
+        );
+    }
+
+    // Renderiza o conteúdo para usuários autenticados
     return (
-        <div className='bg-gray-50 h-[100vh] w-full '>
-
-            <div className='flex justify-start gap-4 text-sm'>
+        <div className={`bg-gray-50 h-[100vh] w-full`}>
+            <div className="flex justify-start text-sm w-full">
                 <Sidebar user={user} />
-
                 <Outlet />
             </div>
         </div>
-    )
+    );
 }
 
-export default Private
+export default Private;

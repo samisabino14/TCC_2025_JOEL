@@ -2,7 +2,6 @@ import axios, { AxiosError } from 'axios';
 import { parseCookies } from 'nookies'
 
 import { AuthTokenError } from './errors/AuthTokenError';
-import { signOut } from '../contexts/AuthContext';
 //import { signOut } from '../contexts/AuthContext';
 
 export const setupAPIClient = (context = undefined) => {
@@ -35,11 +34,11 @@ export const setupAPIClient = (context = undefined) => {
             }
         }
 
-        /*
         if (err.code === 'ECONNABORTED' && err.message.includes('timeout')) {
             
             // Lidar com o tempo limite da requisição
             console.error('A requisição excedeu o tempo limite');
+            alert('A requisição excedeu o tempo limite');
 
         } else if (err.response && err.response?.status === 503) {
             
@@ -49,7 +48,6 @@ export const setupAPIClient = (context = undefined) => {
 
             // Aqui você pode exibir uma mensagem para o usuário informando sobre a manutenção
         }
-        */
 
         return Promise.reject(err);
     })

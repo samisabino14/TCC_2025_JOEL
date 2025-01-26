@@ -8,8 +8,7 @@ import toast from 'react-hot-toast';
 import { LayoutDashboard } from '../../../hooks/Private/LayoutDashboard';
 
 
-
-function Admin() {
+function Manager() {
 
     const [search, setSearch] = useState("");
 
@@ -47,4 +46,4 @@ function Admin() {
     );
 }
 
-export default Admin;
+export default Manager;

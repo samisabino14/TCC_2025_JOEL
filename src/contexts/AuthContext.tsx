@@ -9,22 +9,15 @@ import { destroyCookie, setCookie, parseCookies } from 'nookies';
 import { api } from "../services/apiClient";
 import { ErrorResponse } from "../App";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 export type AuthContextData = {
 
-    user: UserProps;
+    user: UserProps | null;
     isAuthenticated: boolean;
     signIn: (credentials: SignInProps) => Promise<void>;
     signOut: () => void;
     //signUp: (credentials: SignUpProps) => Promise<void>;
-}
-
-export type UserProps = {
-    id: string,
-    email: string,
-    role: string,
-    status: boolean,
-    token: string
 }
 
 export type SignInProps = {
@@ -37,19 +30,100 @@ export type AuthProviderProps = {
     children: ReactNode;
 }
 
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+export type UserProps = {
+    id: string,
+    ksId: number,
+    email: string,
+    status: boolean,
+    isOnline: boolean,
+    Employee: {
+        id: string,
+        ksId: number,
+        personId: string,
+        companyId: string,
+        accountId: string,
+        employeeLevelId: string,
+        status: boolean,
+        createdAt: string,
+        updatedAt: string,
+        Person: {
+            id: string,
+            ksId: number,
+            name: string,
+            biNumber: string,
+            wannaId: string,
+            genre: string,
+            birthDate: string,
+            profilePhoto: string,
+            phoneNumber: string,
+            email: string,
+            country: string,
+            localityId: string,
+            createdAt: string,
+            updatedAt: string,
+            EmployeeLevel: {
+                id: string,
+                ksId: number,
+                level: number,
+                status: boolean,
+                createdAt: string,
+                updatedAt: string,
+            }
+        }
+        company: {
+            id: string,
+            ksId: number,
+            name: string,
+            email: string,
+            phoneNumber: string,
+            logo: string,
+            openHour: string,
+            closeHour: string,
+            description: string,
+            latitude: number,
+            longitude: number,
+            status: boolean,
+            canSchedule: boolean,
+            sectorId: string,
+            companyTypeId: string,
+            subscriptionId: string,
+            subscription:
+            {
+                id: string,
+                planType: string,
+                price: number,
+                indication: string,
+                description: string,
+                status: true,
+                createdAt: string,
+                updatedAt: string
+            }
+            localityId: string,
+            Colors: {
+                name: string,
+                color: string
+            }
+        }
+    },
+    Roles: [
+        {
+            id: string,
+            ksId: number,
+            designation: number,
+            status: true,
+            createdAt: string,
+            updatedAt: string
+        },
+    ],
+    token: string | null,
+}
 
+export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const navigate = useNavigate(); // Hook para redirecionar o usuário
 
-    const [user, setUser] = useState<UserProps>({
-        id: "",
-        email: "",
-        role: "",
-        status: false,
-        token: ""
-    });
+    const [user, setUser] = useState<UserProps | null>(null);
 
     const isAuthenticated = !!user;
 
@@ -59,33 +133,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         if (token) {
 
-            api.get('/accounts/me').then(response => {
+            api.get('/accounts/me/details').then(response => {
 
                 const account = response.data;
 
                 const {
 
                     id,
+                    ksId,
                     email,
                     status,
-                    access_token
+                    isOnline,
+                    Employee,
+                    Roles
 
                 } = account;
-
-                const role = account.AccountType.designation;
-
-                /*
-                api.get('/persons').then(response => {
-                    setAuxUser(response.data);
-                })
-                */
 
                 const user = {
                     id,
                     email,
+                    ksId,
                     status,
-                    role,
-                    token: access_token,
+                    isOnline,
+                    Employee,
+                    Roles,
+                    token
                 };
 
                 setUser(user);
@@ -102,17 +174,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, []);
 
     const signOut = () => {
-
         try {
-            destroyCookie(undefined, '@wanna@pro_25.token'); // Remove o cookie
-            navigate('/login'); // Redireciona para a página de login
-            // toast.success('Sessão terminada com sucesso!');
+            // Remove o cookie
+            destroyCookie(undefined, '@wanna@pro_25.token', {
+                path: '/', // Certifique-se de usar o mesmo path do cookie
+            });
+
+            setUser(null);
+
+            // Após remover o cookie, redireciona para a página de login
+            navigate('/login');
+            
+            // Exibe uma notificação de sucesso
+            toast.success('Sessão terminada com sucesso!');
         } catch (err) {
-            console.error(err);
-            // toast.error('Erro ao deslogar!');
+            console.error('Erro ao deslogar:', err);
+            // Exibe uma notificação de erro
+            toast.error('Erro ao tentar deslogar!');
         }
     };
-
 
     const signIn = async ({ email, password }: SignInProps): Promise<void> => {
         try {
@@ -124,62 +204,57 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             const {
 
-                tokens,
-                account
+                account,
+                tokens
 
-            } = response.data
+            } = response.data;
 
-            const {
-                access_token
-            } = tokens
+            const token = tokens.access_token;
 
             const {
+
                 id,
+                ksId,
                 status,
+                isOnline,
+                Employee,
+                Roles,
 
-            } = account
+            } = account;
 
-            const role = account.AccountType.designation;
-
-            setCookie(undefined, '@wanna@pro_25.token', access_token, {
+            setCookie(undefined, '@wanna@pro_25.token', token, {
                 maxAge: 60 * 60 * 24, // Expires in 1 day
                 path: '/' // Path accessed by cookie
             });
 
-            setUser({
+            const user = {
                 id,
+                ksId,
                 email,
                 status,
-                role,
-                token: access_token
-            });
+                isOnline,
+                Employee,
+                Roles,
+                token
+            };
 
-            api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
+            setUser(user);
 
-            if (role === 1) {
-                //Router.push('/dashboard');
-            }
+            api.defaults.headers['Authorization'] = `Bearer ${token}`;
 
-            else if (role === 2) {
-                //Router.push('/authority');
-            }
-
-            else if (role === 3) {
-                //Router.push('/employee');
-            }
-
-            //toast.success('Logado com sucesso!');
+            toast.success('Logado com sucesso!');
 
         } catch (error) {
             const err = error as ErrorResponse;
 
-            if (err?.response?.data)
-                console.error(err.response.data.message);
-            else
-                console.error("Falha na conexão de rede.");
+            if (err?.response?.data) {
+                toast.error(err.response.data.message);
+            }
+            else {
+                toast.error("Falha na conexão de rede.");
+            }
         }
     }
-
 
     return (
         <AuthContext.Provider value={{
@@ -193,5 +268,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     );
 }
-
-

@@ -1,4 +1,4 @@
-import React, {
+import {
 
     FormEvent,
     useState,
@@ -6,10 +6,11 @@ import React, {
 
 } from 'react';
 import { Link } from "react-router-dom";
-import { api } from "../../../services/apiClient";
 import { FcGoogle } from 'react-icons/fc'; // Ícone do Google
 import { FaFacebook } from 'react-icons/fa'; // Ícone do Facebook
 import { AuthContext } from '../../../contexts/AuthContext';
+import Loading from '../../../components/Loading';
+
 
 export const Login = () => {
     const { signIn } = useContext(AuthContext);
@@ -29,12 +30,18 @@ export const Login = () => {
 
         setLoading(true);
 
-        const response = await signIn({ email, password });
-
-        console.log(response);
+        await signIn({ email, password });
 
         setLoading(false);
+    }
 
+    if (loading) {
+        // Exibe um indicador de carregamento enquanto verifica a autenticação
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loading size={10}/>
+            </div>
+        );
     }
 
     return (

@@ -25,7 +25,6 @@ export const CompanyByID = () => {
             try {
 
                 const response = await api.get(`/company/${companyId}`);
-                console.log(response.data);
                 setCompany(response.data);
 
             } catch (error) {

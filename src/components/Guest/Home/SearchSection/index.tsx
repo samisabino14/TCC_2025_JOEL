@@ -53,12 +53,13 @@ export const SearchSection = () => {
 
         return () => clearInterval(intervalId); // Limpa o intervalo ao desmontar o componente
     }, []);
-
+    
     useEffect(() => {
 
         const fecthStoredServices = () => {
+            if(!localStorage.getItem) return;
             //Recupera a lista completa de serviços do localStorage
-            const storedServices = JSON?.parse(localStorage?.getItem('allServices')) || [];
+            const storedServices = JSON?.parse(localStorage.getItem('allServices')) || [];
 
             setServicesLocalStorage(storedServices);
         }
