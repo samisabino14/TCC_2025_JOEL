@@ -51,9 +51,9 @@ export function Plans() {
                 const err = error as ErrorResponse;
 
                 if (err?.response?.data)
-                    toast.error(err.response.data.message);
+                    toast.error(err.response.data.mensagem);
                 else if (err?.response?.data?.statusCode)
-                    toast.error(err.response.data.message);
+                    toast.error(err.response.data.mensagem);
                 else
                     toast.error("Falha na conexão de rede.");
             } finally {
@@ -85,8 +85,8 @@ export function Plans() {
                 },
             ],
             indicationDescription: {
-                indication: "Empresas que desejam experimentar o potencial do Wanna Pro e aumentar sua visibilidade localmente.",
-                descrition: "Ideal para pequenas empresas que estão começando a utilizar o Wanna Pro. Com o plano Bronze, você obtém acesso básico à plataforma, permitindo listar seus serviços e ser encontrado por clientes próximos."
+                indication: "Empresas que desejam experimentar o potencial do Jobs e aumentar sua visibilidade localmente.",
+                descrition: "Ideal para pequenas empresas que estão começando a utilizar o Jobs. Com o plano Bronze, você obtém acesso básico à plataforma, permitindo listar seus serviços e ser encontrado por clientes próximos."
             }
         },
         {
@@ -178,7 +178,7 @@ export function Plans() {
                                 key={index}
                                 className="relative shadow-lg rounded-t-2xl p-6 bg-white border dark:border-none md:border-none dark:bg-[#322159] dark:text-white"
                             >
-                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#322159] dark:bg-[#F57C00] text-white text-sm font-semibold rounded-full px-4 py-1 shadow-md">
+                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#322159] dark:bg-[#F2994A] text-white text-sm font-semibold rounded-full px-4 py-1 shadow-md">
                                     Plano
                                 </div>
 
@@ -190,7 +190,7 @@ export function Plans() {
                                             {formatNumber(plan.price)} <span className="text-lg font-semibold ">AOA/MÊS</span>
                                         </p>
 
-                                        <button onClick={() => handleSubscribe(plan)} className='bg-gradient-to-r font-semibold lg:hover:scale-105 duration-500 cursor-pointer from-[#F57C00] to-[#FFCA28] py-3 px-8 rounded-full text-white text-xs lg:text-sm'>
+                                        <button onClick={() => handleSubscribe(plan)} className='bg-gradient-to-r font-semibold lg:hover:scale-105 duration-500 cursor-pointer from-[#F2994A] to-[#FFCA28] py-3 px-8 rounded-full text-white text-xs lg:text-sm'>
                                             <p>Subscrever</p>
                                         </button>
                                     </div>
@@ -201,7 +201,7 @@ export function Plans() {
                                                 className="flex justify-between font-bold items-center gap-4"
                                             >
                                                 <p className="text-green-700"><FiCheckCircle size={20} /></p>
-                                                <p className='dark:text-white font-medium'>{feature.name}</p>
+                                                <p className='font-medium'>{feature.name}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -209,10 +209,10 @@ export function Plans() {
                             </div>
 
                             <div
-                                className="relative grid gap-4 shadow-lg rounded-b-2xl p-6 bg-white dark:bg-[#322159] dark:text-white text-sm"
+                                className="relative grid gap-4 shadow-lg rounded-b-2xl p-6 bg-white dark:bg-[#322159] text-sm"
                             >
-                                <p><span className='dark:text-white font-medium dark:font-bold'>Indicado para:</span> {plan.indication}</p>
-                                <p><span className='dark:text-white font-medium dark:font-bold'>Descrição:</span> {plan.description}</p>
+                                <p><span className='font-medium dark:font-bold'>Indicado para:</span> {plan.indication}</p>
+                                <p><span className='font-medium dark:font-bold'>Descrição:</span> {plan.description}</p>
                             </div>
                         </div>
                     ))}

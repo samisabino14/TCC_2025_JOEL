@@ -15,12 +15,12 @@
       }
 
       .cls-3 {
-        fill: #f57c00;
+        fill: #F2994A;
       }
     </style>
     <linearGradient id="Gradiente_sem_nome_4" data-name="Gradiente sem nome 4" x1="373.16" y1="569.76" x2="551.63" y2="569.76" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#f54300"/>
-      <stop offset="1" stop-color="#f57c00"/>
+      <stop offset="1" stop-color="#F2994A"/>
     </linearGradient>
     <linearGradient id="Gradiente_sem_nome_4-2" data-name="Gradiente sem nome 4" x1="561.61" y1="604.62" x2="1101.12" y2="604.62" xlink:href="#Gradiente_sem_nome_4"/>
   </defs>

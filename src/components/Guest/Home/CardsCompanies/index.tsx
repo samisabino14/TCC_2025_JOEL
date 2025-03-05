@@ -64,6 +64,7 @@ export function CardsCompanies() {
                 setIsLoading(true);
 
                 // Busca todas as empresas da API
+                /*
                 const response = await api.get('/company');
 
                 if (response.data.length === 0) {
@@ -72,14 +73,96 @@ export function CardsCompanies() {
                 }
 
                 setCompanies(response.data);
+                */
+
+                setCompanies([
+                    {
+                        id: "1",
+                        name: "Luanda",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                    {
+                        id: "2",
+                        name: "Benguela",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                    {
+                        id: "3",
+                        name: "Cabinda",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                    {
+                        id: "4",
+                        name: "Bié",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                    {
+                        id: "5",
+                        name: "Lunda Norte",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                    {
+                        id: "6",
+                        name: "Lunda Sul",
+                        image: "/log_jobs.svg",
+                        locality: {
+                            id: "",
+                            ksId: 1,
+                            designation: "Luanda",
+                            status: true,
+                            createdAt: "",
+                            updatedAt: ""
+                        }
+                    },
+                ])
 
             } catch (error) {
                 const err = error as ErrorResponse;
 
                 if (err?.response?.data)
-                    toast.error(err.response.data.message);
+                    toast.error(err.response.data.mensagem);
                 else if (err?.response?.data?.statusCode)
-                    toast.error(err.response.data.message);
+                    toast.error(err.response.data.mensagem);
                 else
                     toast.error("Falha na conexão de rede.");
             } finally {
@@ -92,7 +175,7 @@ export function CardsCompanies() {
 
 
     const handleRedirect = (company: CompanyProps) => {
-        navigate(`/empresas/${company.id}`);
+        //navigate(`/empresas/${company.id}`);
     }
 
     if (isLoading) {
@@ -115,7 +198,7 @@ export function CardsCompanies() {
     return (
         <div className="grid gap-10 w-full">
 
-            <h1 className="text-xl text-center font-semibold">Empresas</h1>
+            <h1 className="text-xl text-center font-semibold">Encontre-nos nessas províncias</h1>
 
             {companies?.length > 0 ? (
                 <Swiper
@@ -157,7 +240,7 @@ export function CardsCompanies() {
                             key={index}
                             style={{ width: "auto" }} // Ajusta para caber dinamicamente
                         >
-                            
+
                             <Company
                                 company={company}
                                 handleRedirect={handleRedirect}

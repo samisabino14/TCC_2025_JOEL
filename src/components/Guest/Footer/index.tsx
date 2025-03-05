@@ -6,7 +6,7 @@ export default function Footer() {
         <div className="flex px-4 lg:mx-0 w-full h-20 justify-center items-center text-xs">
             <div className="flex flex-reverse flex-col md:flex-row lg:w-[88%] w-full justify-between items-center">
 
-                <Link className='text-gray-700' to={`/login`}>WannaPro © {new Date().getFullYear()}</Link>
+                <Link className='text-gray-700' to={`/login`}>Jobs © {new Date().getFullYear()}</Link>
                 <p>Redes Sociais</p>
 
             </div>

@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
-import Sidebar from '../../hooks/Private/Sidebar';
-import Loading from '../../components/Loading';
-import returnRole from './ReturnRole';
+import { AuthContext } from '../../../contexts/AuthContext';
+import Sidebar from '../../../hooks/Private/Sidebar';
+import Loading from '../../../components/Loading';
+import returnRole from '../ReturnRole';
 
 
 
-function Private() {
+function Dashboard() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation(); // Para verificar a rota atual
@@ -49,10 +49,11 @@ function Private() {
     return (
         <div className={`bg-gray-50 h-[100vh] w-full`}>
             <div className="flex justify-start text-sm w-full">
+                <Sidebar user={user} />
                 <Outlet />
             </div>
         </div>
     );
 }
 
-export default Private;
+export default Dashboard;

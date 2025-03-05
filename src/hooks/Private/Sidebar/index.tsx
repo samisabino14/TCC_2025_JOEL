@@ -82,7 +82,7 @@ function Sidebar({ user }: User) {
                         />
                     ) : (
                         <img
-                            src="/logo_wanna_pro.svg"
+                            src="/log_jobs.svg"
                             alt="Logo Padrão"
                             className="rounded-full w-12 h-12"
                         />
@@ -90,7 +90,7 @@ function Sidebar({ user }: User) {
 
                     {!isCollapsed && (
                         <h1 className={`text-base font-semibold ${isFullyExpanded ? 'opacity-100' : 'opacity-0'}`}>
-                            {user?.Employee?.company?.name || 'Wanna Pro'}
+                            {user?.Employee?.company?.name || 'Jobs'}
                         </h1>
                     )}
                 </div>
@@ -107,7 +107,7 @@ function Sidebar({ user }: User) {
             <div className="flex items-center p-4">
                 <Link to={`perfil`}>
                     <img
-                        src="/logo_wanna_pro.svg"
+                        src="/log_jobs.svg"
                         alt="Admin"
                         className="rounded-full w-8 h-8 border p-1"
                     />

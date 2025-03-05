@@ -6,8 +6,8 @@ export const CardHome = () => {
 
             <div>
                 <img
-                    src="/logo_wanna_pro.svg"
-                    alt="Logo da Wanna Pro"
+                    src="/log_jobs.svg"
+                    alt="Logo da Jobs"
                     width={0}
                     height={0}
                     className="w-[240px] h-44 md:h-72 md:w-[320px] lg:w-[320px] "

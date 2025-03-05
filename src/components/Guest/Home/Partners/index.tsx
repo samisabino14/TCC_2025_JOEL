@@ -8,7 +8,7 @@ export default function Partners() {
     {
       id: 1,
       name: "",
-      image: "/logo_wanna_pro.svg",
+      image: "/log_jobs.svg",
     },
     {
       id: 2,
@@ -18,7 +18,7 @@ export default function Partners() {
     {
       id: 1,
       name: "",
-      image: "/logo_wanna_pro.svg",
+      image: "/log_jobs.svg",
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ export default function Partners() {
     {
       id: 1,
       name: "",
-      image: "/logo_wanna_pro.svg",
+      image: "/log_jobs.svg",
     },
     {
       id: 2,
@@ -38,7 +38,7 @@ export default function Partners() {
     {
       id: 1,
       name: "",
-      image: "/logo_wanna_pro.svg",
+      image: "/log_jobs.svg",
     },
     {
       id: 2,
@@ -48,7 +48,7 @@ export default function Partners() {
     {
       id: 1,
       name: "",
-      image: "/logo_wanna_pro.svg",
+      image: "/log_jobs.svg",
     },
     {
       id: 2,

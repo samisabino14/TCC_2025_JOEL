@@ -31,90 +31,12 @@ export type AuthProviderProps = {
 }
 
 export type UserProps = {
-    id: string,
-    ksId: number,
+    id_usuario: number,
+    id_pessoa: number,
+    senha: string,
+    nome: string,
     email: string,
-    status: boolean,
-    isOnline: boolean,
-    Employee: {
-        id: string,
-        ksId: number,
-        personId: string,
-        companyId: string,
-        accountId: string,
-        employeeLevelId: string,
-        status: boolean,
-        createdAt: string,
-        updatedAt: string,
-        Person: {
-            id: string,
-            ksId: number,
-            name: string,
-            biNumber: string,
-            wannaId: string,
-            genre: string,
-            birthDate: string,
-            profilePhoto: string,
-            phoneNumber: string,
-            email: string,
-            country: string,
-            localityId: string,
-            createdAt: string,
-            updatedAt: string,
-            EmployeeLevel: {
-                id: string,
-                ksId: number,
-                level: number,
-                status: boolean,
-                createdAt: string,
-                updatedAt: string,
-            }
-        }
-        company: {
-            id: string,
-            ksId: number,
-            name: string,
-            email: string,
-            phoneNumber: string,
-            logo: string,
-            openHour: string,
-            closeHour: string,
-            description: string,
-            latitude: number,
-            longitude: number,
-            status: boolean,
-            canSchedule: boolean,
-            sectorId: string,
-            companyTypeId: string,
-            subscriptionId: string,
-            subscription:
-            {
-                id: string,
-                planType: string,
-                price: number,
-                indication: string,
-                description: string,
-                status: true,
-                createdAt: string,
-                updatedAt: string
-            }
-            localityId: string,
-            Colors: {
-                name: string,
-                color: string
-            }
-        }
-    },
-    Roles: [
-        {
-            id: string,
-            ksId: number,
-            designation: number,
-            status: true,
-            createdAt: string,
-            updatedAt: string
-        },
-    ],
+    tipo_usuario: string,
     token: string | null,
 }
 
@@ -129,34 +51,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
 
-        const { '@wanna@pro_25.token': token } = parseCookies();
+        const { '@tcc_2025.token': token } = parseCookies();
 
         if (token) {
 
-            api.get('/accounts/me/details').then(response => {
-
-                const account = response.data;
+            api.get('/usuarios/me/details').then(response => {
 
                 const {
-
-                    id,
-                    ksId,
+                    id_usuario,
+                    id_pessoa,
+                    senha,
                     email,
-                    status,
-                    isOnline,
-                    Employee,
-                    Roles
-
-                } = account;
+                    tipo_usuario,
+                    nome
+                } = response.data;
 
                 const user = {
-                    id,
+                    id_usuario,
+                    id_pessoa,
+                    senha,
+                    nome,
                     email,
-                    ksId,
-                    status,
-                    isOnline,
-                    Employee,
-                    Roles,
+                    tipo_usuario,
                     token
                 };
 
@@ -166,7 +82,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 const err = error as ErrorResponse;
 
                 if (err?.response?.data)
-                    console.error(err.response.data.message);
+                    console.error(err.response.data.mensagem);
                 else
                     console.error("Falha na conexão de rede.");
             })
@@ -176,7 +92,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const signOut = () => {
         try {
             // Remove o cookie
-            destroyCookie(undefined, '@wanna@pro_25.token', {
+            destroyCookie(undefined, '@tcc_2025.token', {
                 path: '/', // Certifique-se de usar o mesmo path do cookie
             });
 
@@ -184,7 +100,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             // Após remover o cookie, redireciona para a página de login
             navigate('/login');
-            
+
             // Exibe uma notificação de sucesso
             toast.success('Sessão terminada com sucesso!');
         } catch (err) {
@@ -197,44 +113,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const signIn = async ({ email, password }: SignInProps): Promise<void> => {
         try {
 
-            const response = await api.post('/accounts/session', {
+            const response = await api.post('/usuarios/login', {
                 email,
-                password
+                senha: password
             });
 
             const {
-
-                account,
-                tokens
-
+                usuario,
+                token
             } = response.data;
 
-            const token = tokens.access_token;
-
             const {
+                id_usuario,
+                id_pessoa,
+                senha,
+                tipo_usuario,
+                nome
+            } = usuario;
 
-                id,
-                ksId,
-                status,
-                isOnline,
-                Employee,
-                Roles,
-
-            } = account;
-
-            setCookie(undefined, '@wanna@pro_25.token', token, {
+            setCookie(undefined, '@tcc_2025.token', token, {
                 maxAge: 60 * 60 * 24, // Expires in 1 day
                 path: '/' // Path accessed by cookie
             });
 
             const user = {
-                id,
-                ksId,
+                id_usuario,
+                id_pessoa,
+                senha,
+                nome,
+                tipo_usuario,
                 email,
-                status,
-                isOnline,
-                Employee,
-                Roles,
                 token
             };
 
@@ -248,7 +156,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const err = error as ErrorResponse;
 
             if (err?.response?.data) {
-                toast.error(err.response.data.message);
+                toast.error(err.response.data.mensagem);
             }
             else {
                 toast.error("Falha na conexão de rede.");

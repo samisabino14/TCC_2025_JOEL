@@ -86,7 +86,7 @@ export const LayoutDashboard = ({ cards, search, setSearch, handleSearch }: Comp
                                     className="w-full flex items-center duration-500 gap-4 justify-start lg:hover:shadow-lg bg-white shadow-md p-4 lg:rounded-2xl md:rounded-xl rounded-lg"
                                 >
                                     <img
-                                        src="/logo_wanna_pro.svg"
+                                        src="/log_jobs.svg"
                                         alt="Logo Padrão"
                                         className="rounded-full w-10 h-10 bg-gray-100 p-2"
                                     />
@@ -101,7 +101,7 @@ export const LayoutDashboard = ({ cards, search, setSearch, handleSearch }: Comp
                                     className="w-full flex items-center duration-500 gap-4 justify-start lg:hover:shadow-lg bg-white shadow-md p-4 lg:rounded-2xl md:rounded-xl rounded-lg"
                                 >
                                     <img
-                                        src="/logo_wanna_pro.svg"
+                                        src="/log_jobs.svg"
                                         alt="Logo Padrão"
                                         className="rounded-full w-10 h-10 bg-gray-100 p-2"
                                     />
@@ -123,8 +123,8 @@ export const LayoutDashboard = ({ cards, search, setSearch, handleSearch }: Comp
                                     <h2 className='text-sm my-2'>Atualize a tua subscrição. Com um plano superior você pode usufruir de benefícios exclusivos e poderás te diferenciar da concorrência.</h2>
                                 </div>
                                 <img
-                                    src="/logo_wanna_pro.svg"
-                                    alt="Logo da Wanna Pro"
+                                    src="/log_jobs.svg"
+                                    alt="Logo da Jobs"
                                     width={0}
                                     height={0}
                                     className="w-10 h-12 md:h-20 hidden md:block md:w-[240px] lg:w-[100px] "

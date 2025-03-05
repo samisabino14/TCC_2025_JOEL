@@ -11,10 +11,9 @@ export const setupAPIClient = (context = undefined) => {
     const api = axios.create({
 
         //baseURL: 'http://172.20.10.3:5000',
-        baseURL: 'http://localhost:5000',
-        //withCredentials: true,
+        baseURL: 'http://localhost:3333',
         headers: {
-            Authorization: `Bearer ${cookies['@wanna@pro_25.token']}`
+            Authorization: `Bearer ${cookies['@tcc_2025.token']}`
         }
     })
 

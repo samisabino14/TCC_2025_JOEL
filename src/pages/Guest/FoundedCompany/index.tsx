@@ -28,7 +28,7 @@ export const FoundedCompany = () => {
                 const err = error as ErrorResponse;
 
                 if (err?.response?.data)
-                    toast.error(err.response.data.message);
+                    toast.error(err.response.data.mensagem);
                 else
                     toast.error("Falha na conexão de rede.");
             }
