@@ -23,7 +23,7 @@ export function Nova() {
     const { id_trajeto, date, horarioSelecionado } = useParams();
     const [trajeto, setTrajeto] = useState<TrajetoProps | null>(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+    const [metodoPagamento, setMetodoPagamento] = useState<string>("");
 
     useEffect(() => {
         const fetchDados = async () => {
@@ -107,8 +107,51 @@ export function Nova() {
 
             {isPopupOpen &&
                 <Popup
-                    content=""
-                    header=""
+                    content={
+                        <div className="flex justify-between items-center gap-4">
+                            <div>
+                                <p>Pagar com:</p>
+
+                                <div className="flex justify-between items-center gap-4">
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="pagamento"
+                                            value="cartao"
+                                            onChange={(e) => setMetodoPagamento(e.target.value)}
+                                            checked={metodoPagamento === "cartao"}
+                                        />
+                                        Cartão
+                                    </label>
+
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="pagamento"
+                                            value="banco"
+                                            onChange={(e) => setMetodoPagamento(e.target.value)}
+                                            checked={metodoPagamento === "banco"}
+                                        />
+                                        Banco
+                                    </label>
+
+                                    <label className="flex items-center gap-2">
+                                        <input
+                                            type="radio"
+                                            name="pagamento"
+                                            value="transferencia"
+                                            onChange={(e) => setMetodoPagamento(e.target.value)}
+                                            checked={metodoPagamento === "transferencia"}
+                                        />
+                                        Transferência
+                                    </label>
+                                </div>
+                            </div>
+                            <h1>2</h1>
+                        </div>
+                    }
+                    size="w-[62vw]"
+                    header="Pagamento"
                     onClose={() => setIsPopupOpen(false)}
                 />
             }
