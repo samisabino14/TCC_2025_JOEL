@@ -35,19 +35,19 @@ function Sidebar({ user }: User) {
 
     const returnRole = (role: number) => {
 
-        if (role === 1) return `Gestor${user.Employee.Person.genre.toLowerCase() === 'feminino' ? 'a' : ''}`;
-        if (role === 2) return `Administrador${user.Employee.Person.genre.toLowerCase() === 'feminino' ? 'a' : ''}`;
-        if (role === 3) return `Funcionári${user.Employee.Person.genre.toLowerCase() === 'feminino' ? 'a' : 'o'}`;
+        if (role === 1) return `Gestor`;
+        if (role === 2) return `Administrador`;
+        if (role === 3) return `Funcionário`;
         if (role === 4) return `Usuário`;
         return null;
     };
 
     const menuItems = [
-        { icon: <FaHome />, label: 'Dashboard', link: "dashboard" },
-        { icon: <FaUser />, label: 'Usuários', link: "dashboard" },
-        { icon: <FaTags />, label: 'Promoções e ofertas', link: "dashboard" },
-        { icon: <FaCalendarAlt />, label: 'Horas de pico', link: "dashboard" },
-        { icon: <FaChartBar />, label: 'Histórico de pesquisas', link: "dashboard" },
+        { icon: <FaHome />, label: 'Dashboard', link: "/dashboard" },
+        { icon: <FaUser />, label: 'Usuários', link: "administrador/usuarios" },
+        { icon: <FaTags />, label: 'Promoções e ofertas', link: "" },
+        { icon: <FaCalendarAlt />, label: 'Horários', link: "administrador/horarios-trajeto" },
+        { icon: <FaChartBar />, label: 'Histórico de pesquisas', link: "" },
     ];
 
     const settingsItems = [
@@ -74,23 +74,15 @@ function Sidebar({ user }: User) {
             {/* Header */}
             <div className="flex items-center justify-between gap-2 p-3 bg-white">
                 <div className="flex items-center justify-start gap-1 bg-white">
-                    {user?.Employee?.company?.logo ? (
-                        <img
-                            src={user.Employee.company.logo}
-                            alt={`Logo de ${user.Employee.company.name}`}
-                            className="rounded-full w-12 h-12"
-                        />
-                    ) : (
-                        <img
-                            src="/log_jobs.svg"
-                            alt="Logo Padrão"
-                            className="rounded-full w-12 h-12"
-                        />
-                    )}
+                    <img
+                        src="/log_jobs.svg"
+                        alt="Logo Padrão"
+                        className="rounded-full w-12 h-12"
+                    />
 
                     {!isCollapsed && (
                         <h1 className={`text-base font-semibold ${isFullyExpanded ? 'opacity-100' : 'opacity-0'}`}>
-                            {user?.Employee?.company?.name || 'Jobs'}
+                            Jobs
                         </h1>
                     )}
                 </div>
@@ -120,11 +112,8 @@ function Sidebar({ user }: User) {
                         <Link to={`perfil`}
 
                             className={`ml-3 w-full ${isFullyExpanded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
-                            <p className="text-sm font-semibold">{user?.Employee?.Person?.name}</p>
-                            <p className="text-xs text-gray-500">{returnRole(user?.Roles[0].designation)}</p>
-                        </Link>
 
-                        {user?.Roles.length > 1 && <p className="text-xs bg-white cursor-pointer p-2 font-semibold rounded-md text-red-500">Trocar</p>}
+                        </Link>
 
                     </div>
                 )}
@@ -138,7 +127,7 @@ function Sidebar({ user }: User) {
                     MENU
                 </p>
                 {menuItems.map((item, index) => (
-                    <Link to={`/${item.link}`}
+                    <Link to={`${item.link}`}
                         key={index}
                         className={`flex items-center justify-${isCollapsed ? 'center' : 'start'} gap-4 px-2 py-3 hover:bg-gray-50 rounded-md cursor-pointer`}
                     >

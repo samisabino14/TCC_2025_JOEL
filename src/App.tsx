@@ -14,6 +14,13 @@ import NotFound from './pages/NotFound';
 import { Nova } from './pages/Private/Utilizador/Reservas/Nova';
 import { Rotas } from './pages/Private/Utilizador/Rotas';
 import { Reservas } from './pages/Private/Utilizador/Reservas';
+import { Usuarios } from './pages/Private/Dashboard/Usuarios';
+import { Localidades } from './pages/Private/Dashboard/Localidades';
+import { Pessoas } from './pages/Private/Dashboard/Pessoas';
+import { TipoUsuario } from './pages/Private/Dashboard/TipoUsuario';
+import { TiposFuncionarios } from './pages/Private/Dashboard/TiposFuncionarios';
+import { Trajetos } from './pages/Private/Dashboard/Trajetos';
+import { HorariosTrajeto } from './pages/Private/Dashboard/HorariosTrajeto';
 
 export interface ErrorResponse {
   response?: {
@@ -41,7 +48,6 @@ function App() {
         <Route path="/" element={<GuestRoute />}>
           <Route path="/" element={<Guest />}>
             <Route index element={<Home />} />
-
           </Route>
           <Route path='/login' element={<Login />} />
           <Route path='/cadastro' element={<Register />} />
@@ -52,6 +58,13 @@ function App() {
         <Route path="/dashboard" element={<Private />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path='/dashboard/administrador' element={<Admin />} />
+            <Route path='/dashboard/administrador/usuarios' element={<Usuarios />} />
+            <Route path='/dashboard/administrador/localidades' element={<Localidades />} />
+            <Route path='/dashboard/administrador/pessoas' element={<Pessoas />} />
+            <Route path='/dashboard/administrador/tipos-usuario' element={<TipoUsuario />} />
+            <Route path='/dashboard/administrador/tipos-funcionario' element={<TiposFuncionarios />} />
+            <Route path='/dashboard/administrador/trajetos' element={<Trajetos />} />
+            <Route path='/dashboard/administrador/horarios-trajeto' element={<HorariosTrajeto />} />
             <Route path='/dashboard/gestor' element={<Manager />} />
           </Route>
 

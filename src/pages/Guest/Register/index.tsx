@@ -58,7 +58,7 @@ export const Register = () => {
 
     useEffect(() => {
         /*
-        api.get('/localities')
+        api.get('/localidades')
             .then((response) => {
                 setProvinces(response.data.filter((locality: Locality) => locality.localityId === null));
             }).catch((error) => {

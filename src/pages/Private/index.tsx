@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import Sidebar from '../../hooks/Private/Sidebar';
 import Loading from '../../components/Loading';
 import returnRole from './ReturnRole';
-
 
 
 function Private() {
@@ -34,7 +32,7 @@ function Private() {
         }
 
         setLoading(false); // Indica que o carregamento terminou
-    }, [user, navigate, location]);
+    }, [user, navigate]);
 
     if (loading || !user) {
         // Exibe um indicador de carregamento enquanto verifica a autenticação

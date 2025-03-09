@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { FaArrowCircleRight } from "react-icons/fa";
 import { Popup } from "../../../../../components/Popup";
 
-function formatarNumero(valor: number) {
+export function formatarNumero(valor: number) {
     return Number(valor).toLocaleString("fr-FR").replace(",", " ");
 }
 

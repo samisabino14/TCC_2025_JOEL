@@ -154,11 +154,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         } catch (error) {
             const err = error as ErrorResponse;
-
             if (err?.response?.data) {
                 toast.error(err.response.data.mensagem);
             }
             else {
+                console.log(error)
                 toast.error("Falha na conexão de rede.");
             }
         }

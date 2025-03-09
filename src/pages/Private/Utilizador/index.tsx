@@ -14,6 +14,7 @@ import { CardsCompanies } from "../../../components/Guest/Home/CardsCompanies";
 import { SearchSection } from "../../../components/Guest/Home/SearchSection";
 import { Description } from "../../../components/Guest/Home/Description";
 import SearchCard from "../../../components/SearchCard";
+import Header from '../../../components/Guest/Header';
 
 export interface TrajetoProps {
     id_trajeto: number,
@@ -42,6 +43,8 @@ function Utilizador() {
 
     return (
         <div className="max-w-[100vw] grid gap-10">
+
+            <Header/>
 
             <SearchSection />
 
