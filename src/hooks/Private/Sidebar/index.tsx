@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { AuthContext, UserProps } from '../../../contexts/AuthContext';
 import { FaHome, FaUser, FaTags, FaChartBar, FaCalendarAlt, FaCog, FaQuestionCircle, FaSignOutAlt } from 'react-icons/fa';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from '../../../components/Loading';
 
 export type User = {
@@ -9,6 +9,7 @@ export type User = {
 }
 
 function Sidebar({ user }: User) {
+    const navigate = useNavigate();
 
     const [isCollapsed, setIsCollapsed] = useState(true);
     const [isFullyExpanded, setIsFullyExpanded] = useState(true); // Controla se a transição foi concluída
@@ -18,6 +19,10 @@ function Sidebar({ user }: User) {
         if (typeof signOut === 'function') {
             signOut();
         }
+    };
+    const handleRedirect = (link: string) => {
+
+        navigate(`administrador/${link}`)
     };
 
     const toggleSidebar = () => {
@@ -51,7 +56,7 @@ function Sidebar({ user }: User) {
     ];
 
     const settingsItems = [
-        { icon: <FaCog />, label: 'Configurações', link: "dashboard" },
+        { icon: <FaCog />, label: 'Configurações', link: "configuracoes" },
         { icon: <FaQuestionCircle />, label: 'Suporte ao Cliente', link: "dashboard" },
         { icon: <FaSignOutAlt />, label: 'Sair', isLogout: true },
     ];
@@ -74,17 +79,21 @@ function Sidebar({ user }: User) {
             {/* Header */}
             <div className="flex items-center justify-between gap-2 p-3 bg-white">
                 <div className="flex items-center justify-start gap-1 bg-white">
+                    {/*
                     <img
                         src="/log_jobs.svg"
                         alt="Logo Padrão"
                         className="rounded-full w-12 h-12"
                     />
+                    */}
 
-                    {!isCollapsed && (
-                        <h1 className={`text-base font-semibold ${isFullyExpanded ? 'opacity-100' : 'opacity-0'}`}>
-                            Jobs
-                        </h1>
-                    )}
+                    {!isCollapsed ? (
+                        <h1 className='text-2xl font-bold'><span className='text-amber-500'>JQ</span>Travel</h1>
+                    )
+                        :
+                        <h1 className='font-bold'><span className='text-amber-500'>JQ</span>T</h1>
+                    }
+
                 </div>
 
                 <button
@@ -109,9 +118,12 @@ function Sidebar({ user }: User) {
 
                     <div className='flex justify-between items-center w-full'>
 
-                        <Link to={`perfil`}
+                        <Link
+                            to={`perfil`}
+                            className={`ml-3 w-full ${isFullyExpanded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+                        >
 
-                            className={`ml-3 w-full ${isFullyExpanded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}>
+                            {user.nome}
 
                         </Link>
 
@@ -155,6 +167,9 @@ function Sidebar({ user }: User) {
                         key={index}
                         onClick={() => {
                             if (item.isLogout) handleSignOut();
+                            else if (item?.link) {
+                                handleRedirect(item.link)
+                            }
                         }}
                         className={`flex items-center justify-${isCollapsed ? 'center' : 'start'} gap-4 px-2 py-3 hover:bg-gray-50 rounded-md cursor-pointer ${item.isLogout ? 'text-red-500' : 'text-gray-700'
                             }`}

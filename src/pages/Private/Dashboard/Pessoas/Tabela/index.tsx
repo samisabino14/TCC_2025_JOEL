@@ -27,9 +27,6 @@ export function Tabela({ dados, onEdit, onDelete }: TabelaProps) {
                     <tr>
                         <th className="px-4 py-2">ID</th>
                         <th className="px-4 py-2">Nome</th>
-                        <th className="px-4 py-2">Localidade</th>
-                        <th className="px-4 py-2">Bairro</th>
-                        <th className="px-4 py-2">Rua</th>
                         <th className="px-4 py-2">BI</th>
                         <th className="px-4 py-2">Email</th>
                         <th className="px-4 py-2">Telefone</th>
@@ -49,21 +46,13 @@ export function Tabela({ dados, onEdit, onDelete }: TabelaProps) {
                             >
                                 <td className="px-4 py-2 border">{pessoa.id_pessoa}</td>
                                 <td className="px-4 py-2 border">{pessoa.nome}</td>
-                                <td className="px-4 py-2 border">{pessoa.localidade}</td>
-                                <td className="px-4 py-2 border">{pessoa.bairro || "N/A"}</td>
-                                <td className="px-4 py-2 border">{pessoa.rua || "N/A"}</td>
                                 <td className="px-4 py-2 border">{pessoa.bilhete_identidade}</td>
                                 <td className="px-4 py-2 border">{pessoa.email}</td>
                                 <td className="px-4 py-2 border">{pessoa.telefone}</td>
                                 <td className="px-4 py-2 border">{pessoa.genero}</td>
                                 <td className="px-4 py-2 border">{new Date(pessoa.data_nascimento).toLocaleDateString()}</td>
                                 <td className="px-4 py-2 border flex gap-2">
-                                    <button
-                                        onClick={() => onEdit(pessoa.id_pessoa)}
-                                        className="text-blue-600 hover:text-blue-800"
-                                    >
-                                        <FaEdit size={18} />
-                                    </button>
+                                    
                                     <button
                                         onClick={() => onDelete(pessoa.id_pessoa)}
                                         className="text-red-600 hover:text-red-800"

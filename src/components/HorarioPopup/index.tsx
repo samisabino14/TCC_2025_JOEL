@@ -1,19 +1,18 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { HorarioProps } from "../SearchCard";
+import { returnHour } from "../../utils/functions/returnHour";
+import { returnDate } from "../../utils/functions/returnDate";
 
 interface HorarioPopupProps {
     horarios: HorarioProps[];
     onClose: () => void;
-    handleHorarioSelecionado: (horario: string) => void
+    handleHorarioSelecionado: (horario: number) => void
 }
 
 export function HorarioPopup({ horarios, handleHorarioSelecionado, onClose }: HorarioPopupProps) {
 
-    const returnHour = (date: string) => {
-
-        return `${new Date(date).getHours().toString().padStart(2, "0")}:${new Date(date).getMinutes().toString().padStart(2, "0")}`;
-    }
     
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-[40vw]">
@@ -29,15 +28,18 @@ export function HorarioPopup({ horarios, handleHorarioSelecionado, onClose }: Ho
                 </div>
                 <div className="max-h-48 overflow-y-auto">
                     {horarios.length > 0 ? (
-                        <ul className="grid grid-cols-2 gap-3">
+                        <ul className="grid xl:grid-cols-2 gap-3">
                             {horarios.map((horario, index) => (
                                 <li
                                     key={index}
                                     className="p-3 border hover:bg-gray-100 cursor-pointer rounded-md text-center shadow-md"
-                                    onClick={() => handleHorarioSelecionado(returnHour(horario.data_hora))}
+                                    onClick={() => handleHorarioSelecionado(horario.id_horario)}
                                 >
-                                    {returnHour(horario.data_hora)}
-                                    <p>Lugares disponíveis: {horario.lugares_disponiveis}</p>
+                                    {/*returnDate((horario.data_hora))*/} 
+                                    <p className="font-semibold">{returnHour(horario.data_hora)}</p>
+                                    <p>{horario.nome} ({horario.endereco})</p>
+                                    <p>{Number(horario.preco).toFixed(0)} Kzs</p>
+                                    <p>Lugares: {horario.lugares_disponiveis}</p>
                                 </li>
                             ))}
                         </ul>

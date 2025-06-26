@@ -6,6 +6,7 @@ import {
 } from 'react';
 import toast from 'react-hot-toast';
 import { LayoutDashboard } from '../../../hooks/Private/LayoutDashboard';
+import { Configuracoes } from '../Dashboard/Configuracoes';
 
 
 
@@ -37,12 +38,16 @@ function Admin() {
 
     return (
         <>
-            <LayoutDashboard
+            {/*
+                <LayoutDashboard
                 cards={cards}
                 search={search}
                 setSearch={setSearch}
                 handleSearch={handleSearch}
             />
+            */}
+
+            <Configuracoes />
         </>
     );
 }

@@ -8,6 +8,7 @@ type TabelaProps = {
 };
 
 export function Tabela({ dados, onEdit, onDelete }: TabelaProps) {
+
     return (
         <div className="w-full overflow-x-auto">
             <div className="max-h-[500px] overflow-y-auto rounded-lg shadow-md border border-gray-300">
@@ -27,9 +28,8 @@ export function Tabela({ dados, onEdit, onDelete }: TabelaProps) {
                             dados.map((dado, index) => (
                                 <tr
                                     key={dado.id_localidade}
-                                    className={`${
-                                        index % 2 === 0 ? "bg-gray-100" : "bg-white"
-                                    } hover:bg-gray-200 transition`}
+                                    className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                                        } hover:bg-gray-200 transition`}
                                 >
                                     <td className="px-6 py-3 border">{dado.id_localidade}</td>
                                     <td className="px-6 py-3 border font-semibold">{dado.nome}</td>

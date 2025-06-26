@@ -6,7 +6,6 @@ import Loading from '../../../components/Loading';
 import returnRole from '../ReturnRole';
 
 
-
 function Dashboard() {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -47,8 +46,10 @@ function Dashboard() {
 
     // Renderiza o conteúdo para usuários autenticados
     return (
-        <div className={`bg-gray-50 h-[100vh] w-full`}>
-            <div className="flex justify-start text-sm w-full">
+        <div className="relative flex h-[100vh] w-full">
+            <div className="absolute inset-0 bg-[url('/dest1.jpg')] bg-cover bg-no-repeat z-0 opacity-30" />
+
+            <div className="relative z-10 flex justify-start text-sm w-full">
                 <Sidebar user={user} />
                 <Outlet />
             </div>

@@ -3,30 +3,31 @@ import {
     FormEvent,
     useState,
     useEffect,
+    useContext,
 
 } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Loading from '../../../components/Loading';
 import toast from 'react-hot-toast';
 import CountryDropdown from '../../../components/CountryDropdown';
 import { api } from '../../../services/apiClient';
 import { ErrorResponse } from '../../../App';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 export type CountriesProps = { name: string; code: string; flag: string }
 
 export interface Locality {
-    id: string,
-    ksId: number,
-    designation: string,
+    id_localidade: string,
+    nome: string,
     status: boolean,
-    localityId: string,
-    createdAt: string,
-    updatedAt: string,
-    Localities: Locality[]
+    localidade_pai: string,
+    criacao: string,
+    atualizacao: string,
 }
 
+
 export const Register = () => {
-    const navigate = useNavigate();
+    const { signIn } = useContext(AuthContext);
 
     const genres = [
         {
@@ -41,13 +42,14 @@ export const Register = () => {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [genre, setGenre] = useState(genres[0].title);
     const [biNumber, setBiNumber] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [birthDate, setBirthDate] = useState("");
     const [provinces, setProvinces] = useState<Locality[]>([]);
     const [municipalities, setMunicipalities] = useState<Locality[]>([]);
-    const [provinceSelected, setProvinceSelected] = useState<string | null>(provinces[0]?.id);
+    const [provinceSelected, setProvinceSelected] = useState<string | null>(provinces[0]?.id_localidade);
     const [localityId, setLocalityId] = useState("");
     const [loading, setLoading] = useState(false);
     const [countries, setCountries] = useState<CountriesProps[]>([]);
@@ -57,10 +59,10 @@ export const Register = () => {
     const [isOpenNacionality, setIsOpenNacionality] = useState(false);
 
     useEffect(() => {
-        /*
+
         api.get('/localidades')
             .then((response) => {
-                setProvinces(response.data.filter((locality: Locality) => locality.localityId === null));
+                setProvinces(response.data.filter((locality: Locality) => locality.localidade_pai === null));
             }).catch((error) => {
                 const err = error as ErrorResponse;
 
@@ -71,24 +73,22 @@ export const Register = () => {
                     toast.error("Falha na conexão de rede.");
                 }
             })
-        */
+
     }, []);
 
-    /*
     useEffect(() => {
-        setProvinceSelected(provinces[0]?.id)
+        setProvinceSelected(provinces[0]?.id_localidade)
     }, [provinces]);
 
     useEffect(() => {
-        setLocalityId(municipalities[0]?.id)
+        setLocalityId(municipalities[0]?.id_localidade)
     }, [municipalities]);
-    */
 
     useEffect(() => {
-        /*
+
         try {
 
-            api.get(`/localities/with/localities/${provinceSelected}`)
+            api.get(`/localidades/com/localidades/${provinceSelected}`)
                 .then((response) => {
                     setMunicipalities(response.data)
                 }).catch((error) => {
@@ -111,14 +111,13 @@ export const Register = () => {
                 toast.error("Falha na conexão de rede.");
             }
         }
-        */
     }, [provinceSelected])
 
     const handleRegister = async (e: FormEvent) => {
 
         e.preventDefault();
 
-        if (name === '' || birthDate === '' || phoneNumber === '' || biNumber === '' || genre === '' || localityId === '') {
+        if (name === '' || email === '' || password === '' || birthDate === '' || phoneNumber === '' || biNumber === '' || genre === '' || localityId === '') {
             toast.error("Preencha todos os campos!");
             return;
         }
@@ -133,38 +132,44 @@ export const Register = () => {
             return;
         }
 
-        const phone = selectedCountry?.code + phoneNumber
+        if (!selectedNationality?.name) {
+            toast.error(`Selecione a tua nacionalidade!`);
+            return;
+        }
 
-        // Criando o objeto FormData
-        const formData = new FormData();
-
-        formData.append("nome", name);
-        formData.append("bilhete_identidade", biNumber);
-        formData.append("genero", genre);
-        formData.append("email", email);
-        formData.append("data_nascimento", birthDate);
-        formData.append("telefone", phone);
-        formData.append("localidade", localityId);
-        formData.append("nacionalidade", localityId);
+        const phone = selectedCountry.code + phoneNumber
 
         setLoading(true);
 
         try {
 
-            await api.post("persons", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+            const response = await api.post("pessoas", {
+                "nome": name,
+                "bilhete_identidade": biNumber,
+                "genero": genre,
+                "email": email,
+                "data_nascimento": birthDate,
+                "telefone": phone,
+                "password": password,
+                "localidade": localityId,
+                "nacionalidade": selectedNationality.name === "Angola" ? "angolana" : "estrangeira"
             });
 
+            const insertId = response.data.pessoa[0].insertId;
+
+            await api.post("usuarios", {
+                id_pessoa: insertId,
+                senha: password
+            })
+
             toast.success("Cadastrado com sucesso.");
-            navigate(`/`);
+
+            await signIn({ email, password });
 
         } catch (error) {
             const err = error as ErrorResponse;
-
-            if (err?.response?.data) {
-                toast.error(err.response.data.mensagem);
+            if (err?.response?.data?.erro) {
+                toast.error(err.response.data.erro);
             }
             else {
                 toast.error("Falha na conexão de rede.");
@@ -188,6 +193,7 @@ export const Register = () => {
             <div className='bg-white w-[90%] lg:w-[40%] shadow-md mt-4 py-4 rounded-lg h-[100%] flex flex-col gap-10 justify-start items-center'>
 
                 <Link to='/' className="flex gap-2 bg-gray-900 px-4 rounded-md justify-between items-center w-full">
+                    {/*
                     <img
                         src="/log_jobs.svg"
                         alt="Logo da Jobs"
@@ -195,6 +201,10 @@ export const Register = () => {
                         height={0}
                         className="w-20 h-12 md:h-20 md:w-[240px] lg:w-[100px] "
                     />
+                    */}
+
+                    <h1 className='text-2xl h-12 text-white mt-4'><span className='text-amber-500 font-bold'>JQ</span>Travel</h1>
+
                 </Link>
 
                 <h1 className="text-lg lg:text-xl font-semibold text-center px-4 lg:w-[80%] w-[90%]">Cadastre-se para encontrar destinos incríveis!</h1>
@@ -223,6 +233,18 @@ export const Register = () => {
                                 className="border px-4 p-3 rounded-lg w-full bg-white"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="password">Palavra-passe <span className='text-red-500 font-bold text-base'>*</span></label>
+                            <input
+                                type="password"
+                                placeholder='123456'
+                                className="border px-4 p-3 rounded-lg w-full bg-white"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                         </div>
@@ -315,7 +337,7 @@ export const Register = () => {
                             <select name="" id="" className="border px-4 p-3 rounded-lg w-full bg-white" onChange={(e) => setProvinceSelected(e.target.value)}>
                                 <option value="" disabled>Selecione a província</option>
                                 {provinces?.map((province, index) => (
-                                    <option key={index} value={province.id}>{province.designation}</option>
+                                    <option key={index} value={province.id_localidade}>{province.nome}</option>
                                 ))}
                             </select>
                         </div>
@@ -326,7 +348,7 @@ export const Register = () => {
                                 <select name="" id="" className="border px-4 p-3 rounded-lg w-full bg-white" onChange={(e) => setLocalityId(e.target.value)}>
                                     <option value="" disabled>Selecione o município</option>
                                     {municipalities?.map((municipe, index) => (
-                                        <option key={index} value={municipe.id}>{municipe.designation}</option>
+                                        <option key={index} value={municipe.id_localidade}>{municipe.nome}</option>
                                     ))}
                                 </select>
                             </div>
@@ -354,7 +376,7 @@ export const Register = () => {
             </div>
 
             <div className="flex px-4 lg:mx-0 w-full h-20 justify-center items-center text-xs">
-                <Link className='' to={`/login`}>Jobs © {new Date().getFullYear()}</Link>
+                <Link className='' to={`/login`}>JQTravel © {new Date().getFullYear()}</Link>
             </div>
         </div>
     )

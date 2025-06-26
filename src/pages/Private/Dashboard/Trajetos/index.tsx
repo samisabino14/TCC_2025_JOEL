@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { api } from "../../../../services/apiClient";
 import toast from "react-hot-toast";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { formatarNumero } from "../../Utilizador/Reservas/Nova";
+import { formatarNumero } from "../../Utilizador/MinhasReservas/Nova";
 import { ModalTrajeto } from "./ModalTrajeto";
+import { ErrorResponse } from "../../../../App";
 
 export type TrajetoProps = {
     id_trajeto: number;
@@ -27,17 +28,23 @@ export function Trajetos() {
                 const response = await api.get("/trajetos");
                 setTrajetos(response.data);
             } catch (error) {
-                toast.error("Erro ao buscar trajetos.");
+                const err = error as ErrorResponse;
+                if (err?.response?.data?.erro) {
+                    toast.error(err.response.data.erro);
+                }
+                else {
+                    toast.error("Falha na conexão de rede.");
+                }
             }
         };
         fetchDados();
     }, []);
 
-    const handleEdit = (id: number) => {
-        alert(`Editar trajeto ID: ${id}`);
+    const handleEdit = () => {
+        setModalAberto(true)
     };
 
-    async function handleSaveTrajeto(novoTrajeto: Omit<TrajetoProps, "id_trajeto" | "criacao" | "atualizacao">) {
+    async function handleSaveTrajeto(novoTrajeto: Omit<TrajetoProps, "id_trajeto" | "partida" | "destino" | "criacao" | "atualizacao">) {
         try {
             const trajetoFormatado = {
                 id_partida: Number(novoTrajeto.id_partida),
@@ -63,7 +70,13 @@ export function Trajetos() {
                 setTrajetos(trajetos.filter((trajeto) => trajeto.id_trajeto !== id));
                 toast.success("Trajeto excluído com sucesso!");
             } catch (error) {
-                toast.error("Erro ao excluir trajeto.");
+                const err = error as ErrorResponse;
+                if (err?.response?.data?.erro) {
+                    toast.error(err.response.data.erro);
+                }
+                else {
+                    toast.error("Falha na conexão de rede.");
+                }
             }
         }
     };
@@ -105,7 +118,7 @@ export function Trajetos() {
                                     <td className="px-4 py-2 border">{Number(trajeto.percentual_parcela_inicial).toFixed(0)}%</td>
                                     <td className="px-4 py-2 border flex gap-2">
                                         <button
-                                            onClick={() => handleEdit(trajeto.id_trajeto)}
+                                            onClick={() => handleEdit()}
                                             className="text-blue-600 hover:text-blue-800"
                                         >
                                             <FaEdit size={18} />

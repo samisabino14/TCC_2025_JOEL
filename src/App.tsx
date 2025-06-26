@@ -11,23 +11,33 @@ import Home from './pages/Guest/Home';
 import { Login } from './pages/Guest/Login';
 import { Register } from './pages/Guest/Register';
 import NotFound from './pages/NotFound';
-import { Nova } from './pages/Private/Utilizador/Reservas/Nova';
+import { Nova } from './pages/Private/Utilizador/MinhasReservas/Nova';
 import { Rotas } from './pages/Private/Utilizador/Rotas';
-import { Reservas } from './pages/Private/Utilizador/Reservas';
+import { MinhasReservas } from './pages/Private/Utilizador/MinhasReservas';
 import { Usuarios } from './pages/Private/Dashboard/Usuarios';
 import { Localidades } from './pages/Private/Dashboard/Localidades';
 import { Pessoas } from './pages/Private/Dashboard/Pessoas';
 import { TipoUsuario } from './pages/Private/Dashboard/TipoUsuario';
 import { TiposFuncionarios } from './pages/Private/Dashboard/TiposFuncionarios';
+import { Funcionarios } from './pages/Private/Dashboard/Funcionarios';
 import { Trajetos } from './pages/Private/Dashboard/Trajetos';
 import { HorariosTrajeto } from './pages/Private/Dashboard/HorariosTrajeto';
+import { Configuracoes } from './pages/Private/Dashboard/Configuracoes';
+import { Reservas } from './pages/Private/Dashboard/Reservas';
+import { Bonus } from './pages/Private/Dashboard/Bonus';
+import { Promocoes } from './pages/Private/Dashboard/Promocoes';
+import { TiposSuporte } from './pages/Private/Dashboard/TiposSuporte';
+import { Suporte } from './pages/Private/Dashboard/Suporte';
+import { Pagamentos } from './pages/Private/Dashboard/Pagamentos';
 
 export interface ErrorResponse {
   response?: {
     data?: {
       mensagem: string,
-      statusCode: string
-    }
+      erro: string,
+      statusCode: string,
+    },
+    status: number
   }
 }
 
@@ -62,17 +72,25 @@ function App() {
             <Route path='/dashboard/administrador/localidades' element={<Localidades />} />
             <Route path='/dashboard/administrador/pessoas' element={<Pessoas />} />
             <Route path='/dashboard/administrador/tipos-usuario' element={<TipoUsuario />} />
+            <Route path='/dashboard/administrador/funcionarios' element={<Funcionarios />} />
             <Route path='/dashboard/administrador/tipos-funcionario' element={<TiposFuncionarios />} />
             <Route path='/dashboard/administrador/trajetos' element={<Trajetos />} />
+            <Route path='/dashboard/administrador/bonus' element={<Bonus />} />
+            <Route path='/dashboard/administrador/tipos-suporte' element={<TiposSuporte />} />
+            <Route path='/dashboard/administrador/suporte' element={<Suporte />} />
+            <Route path='/dashboard/administrador/pagamentos' element={<Pagamentos />} />
+            <Route path='/dashboard/administrador/promocoes' element={<Promocoes />} />
             <Route path='/dashboard/administrador/horarios-trajeto' element={<HorariosTrajeto />} />
+            <Route path='/dashboard/administrador/reservas' element={<Reservas />} />
+            <Route path='/dashboard/administrador/configuracoes' element={<Configuracoes />} />
             <Route path='/dashboard/gestor' element={<Manager />} />
           </Route>
-
+          TiposSuporte
           <Route path='/dashboard/utilizador' element={<Utilizador />} />
 
           <Route path="/dashboard" element={<Rotas />}>
-            <Route path='/dashboard/utilizador/reservas' element={<Reservas />} />
-            <Route path='/dashboard/utilizador/reservas/nova/:id_trajeto/:date/:horarioSelecionado' element={<Nova />} />
+            <Route path='/dashboard/utilizador/reservas' element={<MinhasReservas />} />
+            <Route path='/dashboard/utilizador/reservas/nova/:id_trajeto_empresa_selecionado/:id_horario' element={<Nova />} />
           </Route>
 
         </Route>

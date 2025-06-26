@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { api } from "../../../../services/apiClient";
 import toast from "react-hot-toast";
 import { ModalHorarioTrajeto } from "./ModalHorarioTrajeto";
-import { useNavigate } from "react-router-dom";
+import { ErrorResponse } from "../../../../App";
 
 export type HorarioTrajetoProps = {
     id_horario: number;
@@ -16,7 +16,7 @@ export type HorarioTrajetoProps = {
 export function HorariosTrajeto() {
     const [horarios, setHorarios] = useState<HorarioTrajetoProps[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
-    const navigate = useNavigate();
+    const [horarioParaEditar, setHorarioParaEditar] = useState<HorarioTrajetoProps | null>(null);
 
     useEffect(() => {
         const fetchHorarios = async () => {
@@ -24,7 +24,13 @@ export function HorariosTrajeto() {
                 const response = await api.get("/horarios-trajeto");
                 setHorarios(response.data);
             } catch (error) {
-                toast.error("Erro ao buscar horários de trajeto.");
+                const err = error as ErrorResponse;
+                if (err?.response?.data?.erro) {
+                    toast.error(err.response.data.erro);
+                }
+                else {
+                    toast.error("Falha na conexão de rede.");
+                }
             }
         };
         fetchHorarios();
@@ -32,13 +38,45 @@ export function HorariosTrajeto() {
 
     const handleSaveHorario = async (novoHorario: Omit<HorarioTrajetoProps, "id_horario">) => {
         try {
-            const response = await api.post("/horarios-trajeto", novoHorario);
-            setHorarios([...horarios, response.data]);
-            toast.success("Horário adicionado com sucesso!");
-
-            navigate(0); // Isso recarrega a página
+            if (horarioParaEditar) {
+                await api.put(`/horarios-trajeto/${horarioParaEditar.id_horario}`, novoHorario);
+                setHorarios((prev) =>
+                    prev.map((horario) =>
+                        horario.id_horario === horarioParaEditar.id_horario ? { ...horario, ...novoHorario } : horario
+                    )
+                );
+                toast.success("Horário atualizado com sucesso!");
+            } else {
+                const response = await api.post("/horarios-trajeto", novoHorario);
+                setHorarios([...horarios, response.data]);
+                toast.success("Horário adicionado com sucesso!");
+            }
+            setModalAberto(false);
+            setHorarioParaEditar(null);
         } catch (error) {
-            toast.error("Erro ao adicionar horário.");
+            const err = error as ErrorResponse;
+            if (err?.response?.data?.erro) {
+                toast.error(err.response.data.erro);
+            }
+            else {
+                toast.error("Falha na conexão de rede.");
+            }
+        }
+    };
+
+    const handleDeleteHorario = async (id_horario: number) => {
+        try {
+            await api.delete(`/horarios-trajeto/${id_horario}`);
+            setHorarios(horarios.filter((horario) => horario.id_horario !== id_horario));
+            toast.success("Horário removido com sucesso!");
+        } catch (error) {
+            const err = error as ErrorResponse;
+            if (err?.response?.data?.erro) {
+                toast.error(err.response.data.erro);
+            }
+            else {
+                toast.error("Falha na conexão de rede.");
+            }
         }
     };
 
@@ -46,7 +84,10 @@ export function HorariosTrajeto() {
         <div className="w-full p-4">
             <h1 className="text-xl font-bold mb-4">Horários de Trajeto</h1>
             <button
-                onClick={() => setModalAberto(true)}
+                onClick={() => {
+                    setHorarioParaEditar(null);
+                    setModalAberto(true);
+                }}
                 className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             >
                 Adicionar Novo Horário
@@ -59,6 +100,7 @@ export function HorariosTrajeto() {
                         <th className="px-4 py-2">Trajeto</th>
                         <th className="px-4 py-2">Data e Hora</th>
                         <th className="px-4 py-2">Lugares Disponíveis</th>
+                        <th className="px-4 py-2">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,13 +110,35 @@ export function HorariosTrajeto() {
                             <td className="px-4 py-2">{horario.partida} → {horario.destino}</td>
                             <td className="px-4 py-2">{new Date(horario.data_hora).toLocaleString()}</td>
                             <td className="px-4 py-2">{horario.lugares_disponiveis}</td>
+                            <td className="px-4 py-2 space-x-2">
+                                <button
+                                    onClick={() => {
+                                        setHorarioParaEditar(horario);
+                                        setModalAberto(true);
+                                    }}
+                                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteHorario(horario.id_horario)}
+                                    className="bg-red-600 text-white px-3 py-1 rounded"
+                                >
+                                    Excluir
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
             {modalAberto && (
-                <ModalHorarioTrajeto isOpen={modalAberto} onClose={() => setModalAberto(false)} onSave={handleSaveHorario} />
+                <ModalHorarioTrajeto
+                    isOpen={modalAberto}
+                    onClose={() => setModalAberto(false)}
+                    onSave={handleSaveHorario}
+                    horarioParaEditar={horarioParaEditar}
+                />
             )}
         </div>
     );

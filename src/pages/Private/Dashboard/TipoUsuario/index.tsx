@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../../services/apiClient";
 import toast from "react-hot-toast";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { ModalTipoUsuario } from "./ModalTipoUsuario";
 
 export type TipoUsuarioProps = {
     id_tipo_usuario: number;
@@ -12,6 +13,8 @@ export type TipoUsuarioProps = {
 
 export function TipoUsuario() {
     const [tiposUsuarios, setTiposUsuarios] = useState<TipoUsuarioProps[]>([]);
+    const [tipoSelecionado, setTipoSelecionado] = useState<TipoUsuarioProps | null>(null);
+    const [modalAberto, setModalAberto] = useState(false);
 
     useEffect(() => {
         const fetchDados = async () => {
@@ -27,19 +30,38 @@ export function TipoUsuario() {
     }, []);
 
     const handleEdit = (id: number) => {
-        alert(`Editar tipo de usuário: ${id}`);
+        const tipo = tiposUsuarios.find((t) => t.id_tipo_usuario === id);
+        if (tipo) {
+            setTipoSelecionado(tipo);
+            setModalAberto(true);
+        }
     };
 
-    const handleDelete = (id: number) => {
+    const handleDelete = async (id: number) => {
         if (window.confirm("Tem certeza que deseja excluir este tipo de usuário?")) {
-            setTiposUsuarios(tiposUsuarios.filter((tipo) => tipo.id_tipo_usuario !== id));
-            toast.success("Tipo de usuário excluído com sucesso!");
+            try {
+                await api.delete(`/tipos-usuario/${id}`);
+                setTiposUsuarios(tiposUsuarios.filter((tipo) => tipo.id_tipo_usuario !== id));
+                toast.success("Tipo de usuário excluído com sucesso!");
+            } catch (error) {
+                toast.error("Erro ao excluir tipo de usuário.");
+            }
         }
     };
 
     return (
         <div className="w-full p-4">
             <h1 className="text-xl font-bold mb-4">Tipos de Usuário</h1>
+
+            <button
+                onClick={() => {
+                    setTipoSelecionado(null);
+                    setModalAberto(true);
+                }}
+                className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+                Novo Tipo de Usuário
+            </button>
 
             <div className="overflow-x-auto rounded-lg shadow-md">
                 <div className="max-h-[400px] overflow-y-auto">
@@ -91,6 +113,14 @@ export function TipoUsuario() {
                     </table>
                 </div>
             </div>
+
+            {modalAberto && (
+                <ModalTipoUsuario
+                    isOpen={modalAberto}
+                    onClose={() => setModalAberto(false)}
+                    tipoUsuario={tipoSelecionado}
+                />
+            )}
         </div>
     );
 }

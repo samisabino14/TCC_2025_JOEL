@@ -1,7 +1,7 @@
 import { useState, FormEvent, useEffect, useContext } from "react";
 import { ErrorResponse } from '../../App';
 import { api } from '../../services/apiClient';
-import { TrajetoProps } from "../../pages/Private/Utilizador";
+import { TrajetoEmpresasProps } from "../../pages/Private/Utilizador";
 import { HorarioPopup } from '../../components/HorarioPopup'
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -9,6 +9,11 @@ import { useNavigate } from "react-router-dom";
 
 export type HorarioProps = {
   id_horario: number,
+  id_empresa: number,
+  nome: string,
+  preco: string,
+  telefone: string,
+  endereco: string,
   id_trajeto: number,
   data_hora: string,
   lugares_disponiveis: number,
@@ -21,11 +26,10 @@ export default function SearchCard() {
 
   const navigate = useNavigate();
 
-  const [trajetos, setTrajetos] = useState<TrajetoProps[]>([]);
-
+  const [trajetosEmpresas, setTrajetosEmpresas] = useState<TrajetoEmpresasProps[]>([]);
   const [partidaSelecionada, setPartidaSelecionada] = useState("");
   const [destinoSelecionado, setDestinoSelecionado] = useState("");
-  const [trajetoSelecionado, setTrajetoSelecionado] = useState<number | null>(null);
+  const [trajetoEmpresaSelecionado, setTrajetoEmpresaSelecionado] = useState<number | null>(null);
   const [date, setDate] = useState("");
   const [destinosFiltrados, setDestinosFiltrados] = useState<string[]>([]);
   const [isFocusedPartida, setIsFocusedPartida] = useState(false);
@@ -39,9 +43,9 @@ export default function SearchCard() {
     const fetchTrajetos = async () => {
 
       try {
-        const response = await api.get('/trajetos');
+        const response = await api.get('/trajetos-empresas');
 
-        setTrajetos(response.data)
+        setTrajetosEmpresas(response.data);
 
       } catch (error) {
         const err = error as ErrorResponse;
@@ -58,19 +62,32 @@ export default function SearchCard() {
     fetchTrajetos();
   }, []);
 
+  const partidasMap = new Map();
+
+  trajetosEmpresas.forEach((t) => {
+    if (!partidasMap.has(t.partida)) {
+      partidasMap.set(t.partida, {
+        partida: t.partida,
+        id_trajeto: t.id_trajeto
+      });
+    }
+  });
+
+  const partidasUnicas = Array.from(partidasMap.values());
 
   // Criar lista única de partidas
-  const partidasUnicas = Array.from(new Set(trajetos?.map((t) => t.partida)));
+  //const partidasUnicas = Array.from(new Set(trajetosEmpresas?.map((t) => t.partida)));
 
   // Atualiza destinos ao selecionar a partida
-  const handlePartidaSelecionada = (partida: string) => {
-    setPartidaSelecionada(partida);
+  const handlePartidaSelecionada = (partida) => {
+    setTrajetoEmpresaSelecionado(partida.id_trajeto);
+    setPartidaSelecionada(partida.partida);
     setDestinoSelecionado(""); // Resetar destino ao mudar a partida
     setIsFocusedPartida(false);
 
     // Filtrar destinos disponíveis para a partida selecionada
     setDestinosFiltrados(
-      Array.from(new Set(trajetos.filter((t) => t.partida === partida).map((t) => t.destino)))
+      Array.from(new Set(trajetosEmpresas.filter((t) => t.partida === partida.partida).map((t) => t.destino)))
     );
   };
 
@@ -87,21 +104,28 @@ export default function SearchCard() {
       return
     }
 
-    const trajetoEncontrado = trajetos.find(
+    /*
+    console.log(trajetoEmpresaSelecionado)
+
+    const trajetoEncontrado = trajetosEmpresas.find(
       (t) => t.partida === partidaSelecionada && t.destino === destinoSelecionado
     );
+
+    console.log('\n\n\ntrajetoEncontrado')
+    console.log(trajetoEncontrado)
 
     if (!trajetoEncontrado?.id_trajeto) {
       toast.error("Trajeto não encontrado.");
       return;
     }
+     */
 
     try {
       setIsLoading(true);
 
       const formattedDate = new Date(date).toISOString().split("T")[0]; // Converte para YYYY-MM-DD
-      setTrajetoSelecionado(trajetoEncontrado.id_trajeto)
-      const response = await api.get(`/horarios-trajeto/${formattedDate}/${trajetoEncontrado.id_trajeto}`);
+
+      const response = await api.get(`/horarios-trajeto/${formattedDate}/${trajetoEmpresaSelecionado}`);
 
       setHorarios(response.data);
       setIsPopupOpen(true);
@@ -120,10 +144,10 @@ export default function SearchCard() {
     }
   }
 
-  const handleHorarioSelecionado = (horario: string) => {
+  const handleHorarioSelecionado = (id_horario: number) => {
 
     if (user?.token) {
-      navigate(`reservas/nova/${trajetoSelecionado}/${date}/${horario}`)
+      navigate(`reservas/nova/${trajetoEmpresaSelecionado}/${id_horario}`)
     } else {
       navigate('/login');
       toast.success("Faça o login primeiro");
@@ -135,7 +159,7 @@ export default function SearchCard() {
 
   return (
     <>
-      <div className="bg-white shadow-lg rounded-2xl p-6 max-w-4xl mx-auto -mt-24">
+      <div className={`bg-white shadow-lg rounded-2xl p-6 max-w-4xl z-0 mx-auto -mt-24`}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-600">
           <div className="flex justify-center lg:items-center gap-6">
             <img
@@ -155,16 +179,27 @@ export default function SearchCard() {
                   readOnly
                 />
                 {isFocusedPartida && (
+
                   <div className="absolute bg-white border rounded-md shadow-lg w-[10vw] mt-14 z-10">
-                    {partidasUnicas.map((partida, index) => (
-                      <p
-                        key={index}
-                        className="text-xs text-gray-700 p-2 hover:bg-gray-100 cursor-pointer"
-                        onMouseDown={() => handlePartidaSelecionada(partida)}
-                      >
-                        {partida}
-                      </p>
-                    ))}
+                    {partidasUnicas.length > 0 ?
+                      <>
+
+                        {partidasUnicas.map((item, index) => (
+                          <p
+                            key={index}
+                            className="text-xs text-gray-700 p-2 hover:bg-gray-100 cursor-pointer"
+                            onMouseDown={() => {
+
+                              handlePartidaSelecionada(item)
+                            }}
+                          >
+                            {item.partida} {item.id_trajeto}
+                          </p>
+                        ))}
+                      </>
+                      :
+                      <p className="text-xs p-2">Nenhum local encontrado.</p>
+                    }
                   </div>
                 )}
               </div>
@@ -181,19 +216,29 @@ export default function SearchCard() {
                   readOnly
                   disabled={!partidaSelecionada}
                 />
-                {isFocusedDestino && destinosFiltrados.length > 0 && (
-                  <div className="absolute bg-white border rounded-md shadow-lg w-[10vw] mt-14 z-10">
-                    {destinosFiltrados.map((destino, index) => (
-                      <p
-                        key={index}
-                        className="text-xs text-gray-700 p-2 hover:bg-gray-100 cursor-pointer"
-                        onMouseDown={() => handleDestinoSelecionado(destino)}
-                      >
-                        {destino}
-                      </p>
-                    ))}
-                  </div>
-                )}
+                {isFocusedDestino &&
+                  <>
+                    {
+                      destinosFiltrados.length > 0 ? (
+                        <div className="absolute bg-white border rounded-md shadow-lg w-[10vw] mt-14 z-10">
+                          {destinosFiltrados.map((destino, index) => (
+                            <p
+                              key={index}
+                              className="text-xs text-gray-700 p-2 hover:bg-gray-100 cursor-pointer"
+                              onMouseDown={() => handleDestinoSelecionado(destino)}
+                            >
+                              {destino}
+                            </p>
+                          ))}
+                        </div>
+                      )
+                        :
+                        <div className="absolute bg-white border rounded-md shadow-lg w-[10vw] mt-14 z-10">
+                          <p className="text-xs p-2">Não há destinos para esta origem</p>
+                        </div>
+                    }
+                  </>
+                }
               </div>
             </div>
           </div>

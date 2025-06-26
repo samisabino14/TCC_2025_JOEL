@@ -15,6 +15,7 @@ export function Tabela({ dados, setUsuarioSelecionado, onEdit, onDelete }: Tabel
             <table className="min-w-full border border-gray-300 bg-white shadow-lg rounded-lg">
                 <thead className="bg-blue-600 text-white">
                     <tr>
+                        <th className="px-4 py-2">ID</th>
                         <th className="px-4 py-2">Nome</th>
                         <th className="px-4 py-2">Email</th>
                         <th className="px-4 py-2">Telefone</th>
@@ -25,6 +26,7 @@ export function Tabela({ dados, setUsuarioSelecionado, onEdit, onDelete }: Tabel
                 <tbody>
                     {dados.map((usuario, index) => (
                         <tr key={usuario.id_pessoa} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                            <td className="px-4 py-2 border">{usuario.id_usuario}</td>
                             <td className="px-4 py-2 border">{usuario.nome}</td>
                             <td className="px-4 py-2 border">{usuario.email}</td>
                             <td className="px-4 py-2 border">{usuario.telefone}</td>

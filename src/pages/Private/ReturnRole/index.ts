@@ -1,6 +1,6 @@
 export default function returnRole(role: string) {
-    if (role === "Gestor") return 'gestor';
-    if (role === "Admin" || role === "Administrador") return 'administrador';
-    if (role === "Usuário") return 'utilizador';
+    if (role === "gestor") return 'gestor';
+    if (role === "admin" || role === "Administrador") return 'administrador';
+    if (role === "usuario") return 'utilizador';
     return null;
 };

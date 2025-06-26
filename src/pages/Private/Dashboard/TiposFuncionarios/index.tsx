@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../../services/apiClient";
 import toast from "react-hot-toast";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { ModalTipoFuncionario } from "./ModalTipoFuncionario";
 
 export type TipoFuncionarioProps = {
     id_tipo_funcionario: number;
@@ -12,32 +13,37 @@ export type TipoFuncionarioProps = {
 
 export function TiposFuncionarios() {
     const [tipos, setTipos] = useState<TipoFuncionarioProps[]>([]);
+    const [tipoSelecionado, setTipoSelecionado] = useState<TipoFuncionarioProps | null>(null);
+    const [modalAberto, setModalAberto] = useState(false);
 
     useEffect(() => {
-        const fetchDados = async () => {
-            try {
-                const response = await api.get(`/tipos-funcionario`);
-                console.log(response.data);
-                setTipos(response.data);
-            } catch (error) {
-                console.log(error);
-
-                toast.error("Erro ao buscar tipos de funcionários.");
-            }
-        };
-
-        fetchDados();
+        fetchTipos();
     }, []);
 
-    const handleEdit = (id: number) => {
-        alert(`Editar tipo de funcionário: ${id}`);
+    const fetchTipos = async () => {
+        try {
+            const response = await api.get(`/tipos-funcionario`);
+            setTipos(response.data);
+        } catch (error) {
+            toast.error("Erro ao buscar tipos de funcionários.");
+        }
+    };
+
+    const handleSave = (tipoAtualizado: TipoFuncionarioProps) => {
+        setTipos((prev) => {
+            const existe = prev.some((t) => t.id_tipo_funcionario === tipoAtualizado.id_tipo_funcionario);
+            return existe
+                ? prev.map((t) => (t.id_tipo_funcionario === tipoAtualizado.id_tipo_funcionario ? tipoAtualizado : t))
+                : [...prev, tipoAtualizado];
+        });
+        setModalAberto(false);
     };
 
     const handleDelete = async (id: number) => {
         if (window.confirm("Tem certeza que deseja excluir este tipo de funcionário?")) {
             try {
-                await api.delete(`/tipos-funcionarios/${id}`);
-                setTipos(tipos.filter((tipo) => tipo.id_tipo_funcionario !== id));
+                await api.delete(`/tipos-funcionario/${id}`);
+                setTipos((prev) => prev.filter((tipo) => tipo.id_tipo_funcionario !== id));
                 toast.success("Tipo de funcionário excluído com sucesso!");
             } catch (error) {
                 toast.error("Erro ao excluir tipo de funcionário.");
@@ -48,6 +54,17 @@ export function TiposFuncionarios() {
     return (
         <div className="w-full p-4">
             <h1 className="text-xl font-bold mb-4">Tipos de Funcionários</h1>
+
+            <button
+                onClick={() => {
+                    setTipoSelecionado(null);
+                    setModalAberto(true);
+                }}
+                className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+                Novo Tipo de Funcionário
+            </button>
+
             <div className="overflow-x-auto overflow-y-auto max-h-96 border border-gray-300 rounded-lg shadow-md">
                 <table className="min-w-full bg-white">
                     <thead className="bg-gray-700 text-white">
@@ -68,7 +85,7 @@ export function TiposFuncionarios() {
                                     <td className="px-4 py-2 border text-gray-500">{new Date(tipo.criacao).toLocaleDateString()}</td>
                                     <td className="px-4 py-2 border text-gray-500">{new Date(tipo.atualizacao).toLocaleDateString()}</td>
                                     <td className="px-4 py-2 border flex gap-2">
-                                        <button onClick={() => handleEdit(tipo.id_tipo_funcionario)} className="text-blue-600 hover:text-blue-800">
+                                        <button onClick={() => { setTipoSelecionado(tipo); setModalAberto(true); }} className="text-blue-600 hover:text-blue-800">
                                             <FaEdit size={18} />
                                         </button>
                                         <button onClick={() => handleDelete(tipo.id_tipo_funcionario)} className="text-red-600 hover:text-red-800">
@@ -85,6 +102,15 @@ export function TiposFuncionarios() {
                     </tbody>
                 </table>
             </div>
+
+            {modalAberto && (
+                <ModalTipoFuncionario
+                    isOpen={modalAberto}
+                    onClose={() => setModalAberto(false)}
+                    tipoFuncionario={tipoSelecionado}
+                    onSave={handleSave}
+                />
+            )}
         </div>
     );
 }

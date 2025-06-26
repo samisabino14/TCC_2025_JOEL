@@ -33,6 +33,8 @@ export const Header = () => {
             <div className={`lg:w-[88%] w-full lg:rounded-b-3xl ${toggle && 'lg:rounded-br-sm '} transition-all duration-1000 flex justify-between items-center p-4 lg:p-4`}>
 
                 <Link to="/">
+                    {/*
+                    
                     <img
                         src="/log_jobs.svg"
                         alt="Logo da Jobs"
@@ -40,7 +42,8 @@ export const Header = () => {
                         height={0}
                         className="w-[30px] h-8 md:h-10 md:w-[120px] lg:w-[100px] "
                     />
-
+                    */}
+                    <h1 className='text-2xl text-white'><span className='text-amber-500 font-bold'>JQ</span>Travel</h1>
                 </Link>
 
                 {!user?.token ?

@@ -3,10 +3,12 @@ import { orangeText } from "../../../../utils/functions/orangeText";
 export const SearchSection = () => {
 
     return (
-        <div
-            className="flex xl:flex-row justify-center items-center lg:h-[100vh] md:h-[90vh] h-[80vh] w-full transition-all duration-500 dark:border-b-8 border-[#F2994A] rounded-b-3xl bg-[url('/fundo1.jpg')] bg-cover bg-center"
-        >
-            <div className="flex xl:h-[100vh] w-[92%] md:w-[88%] xl:w-[60%] text-white lg:flex-row flex-col-reverse justify-between items-center text-center">
+        <div className="relative flex xl:flex-row justify-center bg-[url('/fundo1.jpg')] bg-cover bg-center items-center lg:h-[100vh] md:h-[90vh] h-[80vh] w-full transition-all duration-500 dark:border-b-8 border-[#F2994A] rounded-b-3xl overflow-hidden">
+            {/* Camada escura */}
+            <div className="absolute inset-0 bg-black/60 z-0" />
+
+            {/* Conteúdo */}
+            <div className="flex xl:h-[100vh] w-[92%] md:w-[88%] xl:w-[60%] text-white lg:flex-row flex-col-reverse justify-between items-center text-center z-10">
                 <div>
                     <h1 className="xl:text-5xl lg:text-4xl md:text-3xl text-2xl font-bold">
                         Bem-vindo ao {orangeText('Sistema')} de {orangeText('Agendamento')} de {orangeText('Viagens!')}!
@@ -20,5 +22,6 @@ export const SearchSection = () => {
                 </div>
             </div>
         </div>
+
     );
 };

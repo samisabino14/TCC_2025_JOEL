@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../../services/apiClient";
 import toast from "react-hot-toast";
 import { Tabela } from "./Tabela";
+import { ModalLocalidade } from "./ModalLocalidade";
 
 export type LocalidadeProps = {
     id_localidade: number;
@@ -71,6 +72,13 @@ export function Localidades() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
             />
+
+            {modalAberto && <ModalLocalidade
+                isOpen={modalAberto}
+                onClose={() => setModalAberto(false)}
+                localidade={localidadeSelecionada}
+            />
+            }
         </div>
     );
 }

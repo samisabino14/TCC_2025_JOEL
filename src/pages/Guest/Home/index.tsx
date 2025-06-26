@@ -10,7 +10,7 @@ function Home() {
 
             <SearchSection />
 
-            <SearchCard />
+            <SearchCard mt={"-mt-24"} />
 
             <div className="md:w-full w-[100vw] flex flex-col justify-center items-center">
                 <div className="flex flex-col px-4 lg:px-0 gap-20 lg:w-[88%] w-full items-center ">

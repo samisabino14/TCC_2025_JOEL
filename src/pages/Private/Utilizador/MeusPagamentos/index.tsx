@@ -7,8 +7,6 @@ import { AuthContext } from "../../../../contexts/AuthContext";
 
 type ReservaProps = {
     id_reserva: number;
-    id_usuario: number;
-    usuario: string;
     id_trajeto: number;
     partida_trajeto: string;
     destino_trajeto: string;
@@ -17,7 +15,7 @@ type ReservaProps = {
     atualizacao: string;
 }
 
-export function Reservas() {
+export function MeusPagamentos() {
 
     const { user } = useContext(AuthContext);
 
@@ -31,21 +29,10 @@ export function Reservas() {
             }
 
             try {
-                const response = await api.get(`/reservas/usuario/${user.id_usuario}`);
+                const response = await api.get(`/pagamentos/usuario/${user.id_usuario}`);
 
-                console.log(response.data)
-                //setReservas(response.data)
-                setReservas([{
-                    id_reserva: 1,
-                    id_usuario: 1,
-                    usuario: "Sami",
-                    id_trajeto: 1,
-                    partida_trajeto: "Luanda",
-                    destino_trajeto: "Dundo",
-                    status_reserva: "Confirmado",
-                    criacao: "08-03-2025",
-                    atualizacao: "09-03-2025",
-                }])
+                setReservas(response.data)
+
             } catch (error) {
                 const err = error as ErrorResponse;
 
@@ -68,11 +55,7 @@ export function Reservas() {
         <div className="flex flex-col p-10">
             <div className="flex justify-between">
 
-                <h1>Minhas reservas</h1>
-
-                <Link to={'/'} className='bg-gradient-to-r font-semibold duration-500 cursor-pointer from-green-400 to-green-600 py-3 px-8 rounded-lg text-white text-sm'>
-                    <p>Fazer reserva</p>
-                </Link>
+                <h1>Meus pagamentos</h1>
 
             </div>
             <div className="overflow-x-auto pt-10">
@@ -80,9 +63,8 @@ export function Reservas() {
                     <table className="min-w-full border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden">
                         <thead className="bg-blue-600 text-white">
                             <tr>
-                                <th className="px-4 py-2 text-left">Usuário</th>
-                                <th className="px-4 py-2 text-left">Partida</th>
-                                <th className="px-4 py-2 text-left">Destino</th>
+                                <th className="px-4 py-2 text-left">ID</th>
+                                <th className="px-4 py-2 text-left">Trajeto</th>
                                 <th className="px-4 py-2 text-left">Status</th>
                                 <th className="px-4 py-2 text-left">Criação</th>
                             </tr>
@@ -94,9 +76,14 @@ export function Reservas() {
                                     className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"
                                         } hover:bg-gray-200 transition`}
                                 >
+                                    <td className="px-4 py-2 border">{reserva.id_reserva}</td>
+                                    <td className="px-4 py-2 border">{reserva.id_trajeto}</td>
+                                    {/*
                                     <td className="px-4 py-2 border">{reserva.usuario}</td>
                                     <td className="px-4 py-2 border">{reserva.partida_trajeto}</td>
                                     <td className="px-4 py-2 border">{reserva.destino_trajeto}</td>
+                                     */}
+
                                     <td
                                         className={`px-4 py-2 border font-semibold 
                                             ${reserva.status_reserva.toLocaleLowerCase() === "confirmado"

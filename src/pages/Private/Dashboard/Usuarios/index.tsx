@@ -42,8 +42,8 @@ export function Usuarios() {
 
     // Função para abrir modal de edição
     const handleEdit = (id: number) => {
-        console.log(usuarios)
-        const usuario = usuarios.find((d) => d.id_pessoa === id);
+        const usuario = usuarios.find((d) => d.id_usuario === id);
+        
         if (usuario) {
             setUsuarioSelecionado(usuario);
             setModalAberto(true);

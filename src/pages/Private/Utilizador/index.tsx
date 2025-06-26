@@ -1,15 +1,3 @@
-import {
-
-    useState,
-    useEffect,
-    useContext,
-
-} from 'react';
-import toast from 'react-hot-toast';
-import { api } from '../../../services/apiClient';
-import { ErrorResponse } from '../../../App';
-import { AuthContext } from '../../../contexts/AuthContext';
-import Loading from '../../../components/Loading';
 import { CardsCompanies } from "../../../components/Guest/Home/CardsCompanies";
 import { SearchSection } from "../../../components/Guest/Home/SearchSection";
 import { Description } from "../../../components/Guest/Home/Description";
@@ -29,17 +17,26 @@ export interface TrajetoProps {
     destino: string
 }
 
-function Utilizador() {
-    const { user } = useContext(AuthContext);
+export interface TrajetoEmpresasProps {
+    id_trajeto_empresa: number,
+    id_trajeto: number,
+    id_empresa: number,
+    lotacao: number,
+    preco: string,
+    percentual_parcela_inicial: string,
+    status: number,
+    criacao: string,
+    atualizacao: string,
+    nome_empresa: string,
+    nif: string,
+    email: string,
+    telefone: string,
+    endereco: string,
+    partida: string,
+    destino: string
+}
 
-    // Exibe um carregador se `user` for nulo
-    if (!user) {
-        return (
-            <div className="flex w-64 items-center justify-center h-screen">
-                <Loading size={5} />
-            </div>
-        );
-    }
+function Utilizador() {
 
     return (
         <div className="max-w-[100vw] grid gap-10">
