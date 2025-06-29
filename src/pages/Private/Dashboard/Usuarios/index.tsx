@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Tabela } from "../../../../components/Tabela";
 import { api } from "../../../../services/apiClient";
 import { ErrorResponse } from "../../../../App";
 import toast from "react-hot-toast";
-import { ModalUsuario } from "./ModalUsuario";
+import { CountryProps, ModalUsuario } from "./ModalUsuario";
+import { AuthContext } from "../../../../contexts/AuthContext";
 
 export type UsuarioProps = {
     id_pessoa: number;
@@ -17,11 +18,13 @@ export type UsuarioProps = {
     genero: string;
     data_nascimento: string;
     id_usuario: number;
-    tipo_usuario: string;
+    tipo_usuario: number;
 };
 
 
 export function Usuarios() {
+    const { signIn } = useContext(AuthContext);
+
     const [usuarios, setUsuarios] = useState<UsuarioProps[]>([]);
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioProps | null>(null);
     const [modalAberto, setModalAberto] = useState(false);
@@ -43,7 +46,7 @@ export function Usuarios() {
     // Função para abrir modal de edição
     const handleEdit = (id: number) => {
         const usuario = usuarios.find((d) => d.id_usuario === id);
-        
+
         if (usuario) {
             setUsuarioSelecionado(usuario);
             setModalAberto(true);
@@ -58,11 +61,81 @@ export function Usuarios() {
                 setUsuarios(usuarios.filter((usuario) => usuario.id_usuario !== id));
                 toast.success("Usuário excluído com sucesso!");
             } catch (error) {
-                console.log(error)
                 toast.error("Erro ao excluir usuário.");
             }
         }
     };
+
+    const onSave = async (novoUsuario: UsuarioProps, selectedCountry: CountryProps | null, selectedNationality: CountryProps | null) => {
+
+        if (usuarioSelecionado) {
+            setUsuarios(usuarios.map((u) => (u.id_pessoa === novoUsuario.id_pessoa ? novoUsuario : u)));
+        } else {
+            //setUsuarios([...usuarios, novoUsuario]);
+
+            
+            if (novoUsuario.nome === '' || novoUsuario.email === '' || novoUsuario.data_nascimento === '' || novoUsuario.telefone === '' || novoUsuario.bilhete_identidade === '' || novoUsuario.genero === '' || novoUsuario.localidade === 0) {
+                toast.error("Preencha todos os campos!");
+                return;
+            }
+            
+            if (!selectedCountry?.code) {
+                toast.error(`Selecione o indicativo do teu país!`);
+                return;
+            }
+
+            if (selectedCountry.code === "+244" && novoUsuario.telefone.length < 9 || novoUsuario.telefone.length > 9) {
+                toast.error(`O telefone deve conter 9 dígitos!`);
+                return;
+            }
+
+            if (!selectedNationality?.name) {
+                toast.error(`Selecione a tua nacionalidade!`);
+                return;
+            }
+
+            const phone = selectedCountry.code + novoUsuario.telefone
+
+            //setLoading(true);
+
+            try {
+                
+                const response = await api.post("pessoas", {
+                    "nome": novoUsuario.nome,
+                    "bilhete_identidade": novoUsuario.bilhete_identidade,
+                    "genero": novoUsuario.genero,
+                    "email": novoUsuario.email,
+                    "data_nascimento": novoUsuario.data_nascimento,
+                    "telefone": phone,
+                    "localidade": novoUsuario.localidade,
+                    "nacionalidade": selectedNationality.name === "Angola" ? "angolana" : "estrangeira"
+                });
+
+                const insertId = response.data.pessoa[0].insertId;
+
+                await api.post("usuarios", {
+                    id_pessoa: insertId,
+                    senha: '123456',
+                    id_tipo_usuario: novoUsuario.tipo_usuario
+                })
+
+                toast.success("Cadastrado com sucesso.");
+
+            } catch (error) {
+                const err = error as ErrorResponse;
+                if (err?.response?.data?.erro) {
+                    toast.error(err.response.data.erro);
+                }
+                else {
+                    toast.error("Falha na conexão de rede.");
+                }
+            } finally {
+                //setLoading(false);
+            }
+        }
+
+        setModalAberto(false);
+    }
 
     return (
         <div className="w-full p-4">
@@ -92,14 +165,7 @@ export function Usuarios() {
                     isOpen={modalAberto} // ✅ Correto
                     usuario={usuarioSelecionado}
                     onClose={() => setModalAberto(false)}
-                    onSave={(novoUsuario: UsuarioProps) => {
-                        if (usuarioSelecionado) {
-                            setUsuarios(usuarios.map((u) => (u.id_pessoa === novoUsuario.id_pessoa ? novoUsuario : u)));
-                        } else {
-                            setUsuarios([...usuarios, novoUsuario]);
-                        }
-                        setModalAberto(false);
-                    }}
+                    onSave={onSave}
                 />
 
             )}

@@ -21,7 +21,6 @@ function Private() {
         // Aguarda o usuário ser carregado
         if (!user) return;
         let rolePath;
-
         if (user.tipo_usuario) {
             rolePath = returnRole(user.tipo_usuario);
         }

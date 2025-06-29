@@ -7,23 +7,31 @@ import {
 
 } from 'react';
 import toast from 'react-hot-toast';
-import { EmpresaProps } from '../Dashboard/Funcionarios/ModalFuncionario';
-import { FuncionarioProps } from '../Dashboard/Funcionarios';
 import { ReservaProps } from '../Dashboard/Reservas';
+import { ErrorResponse } from '../../../App';
 import { AuthContext } from '../../../contexts/AuthContext';
 import { api } from '../../../services/apiClient';
-import { ErrorResponse } from '../../../App';
 import { TrajetoByID } from '../../../components/Private/TrajetoByID';
 import { UsuarioByID } from '../../../components/Private/UsuarioByID';
 import { Link } from 'react-router-dom';
+import { EmpresaProps } from '../Dashboard/Funcionarios/ModalFuncionario';
+
+interface Funcionario {
+    id_funcionario: number,
+    id_usuario: number,
+    id_tipo_funcionario: number,
+    criacao: string,
+    atualizacao: string,
+    id_empresa: number
+}
 
 
-function Admin() {
+
+function Employee() {
     const { user } = useContext(AuthContext);
 
-    const [search, setSearch] = useState("");
-
-    const [funcionarios, setFuncionarios] = useState<FuncionarioProps[] | null>([]);
+    const [empresa, setEmpresa] = useState<EmpresaProps | null>(null);
+    const [funcionarios, setFuncionarios] = useState<Funcionario[] | null>([]);
     const [trajetosEmpresa, setTrajetosEmpresa] = useState<[] | null>([]);
     const [reservas, setReservas] = useState<ReservaProps[]>([]);
     const [alterado, setAlterado] = useState(false);
@@ -38,14 +46,15 @@ function Admin() {
 
             try {
 
-                const response = await api.get(`/reservas`);
-                const funcionariosEmpresa = await api.get(`/funcionarios`);
-                const trajetosEmpresa = await api.get(`/trajetos`);
+                const funcionarioResponse = await api.get(`/funcionarios/` + user.id_usuario);
 
-                setReservas(response.data);
+                const response = await api.get(`/empresas/` + funcionarioResponse.data.id_empresa);
+                const funcionariosEmpresa = await api.get(`/funcionarios/empresa/` + funcionarioResponse.data.id_empresa);
+                const trajetosEmpresa = await api.get(`/trajetos-empresas/empresa/` + funcionarioResponse.data.id_empresa);
+
+                setEmpresa(response.data);
                 setFuncionarios(funcionariosEmpresa.data);
                 setTrajetosEmpresa(trajetosEmpresa.data);
-                console.log(trajetosEmpresa.data);
 
             } catch (error) {
                 const err = error as ErrorResponse;
@@ -64,39 +73,69 @@ function Admin() {
         fetchDados();
     }, [user])
 
+    useEffect(() => {
+
+        const fetchDados = async () => {
+
+            if (!user) {
+                return;
+            }
+
+            try {
+
+                const funcionarioResponse = await api.get(`/funcionarios/` + user.id_usuario);
+
+                const response = await api.get(`/reservas/empresa/` + funcionarioResponse.data.id_empresa);
+
+                setReservas(response.data)
+
+            } catch (error) {
+                const err = error as ErrorResponse;
+
+                if (err?.response?.data) {
+                    toast.error(err.response.data.mensagem);
+                }
+                else if (err?.response?.data?.statusCode) {
+                    toast.error(err.response.data.mensagem);
+                }
+                else
+                    toast.error("Falha na conexão de rede.");
+            }
+        };
+
+        fetchDados();
+    }, [user, alterado])
+
     const cards = [
         {
             id: 1,
             title: "Reservas",
             size: reservas?.length,
-            link: "reservas"
+            //link: "reservas"
         },
         {
             id: 2,
             title: "Trajetos",
             size: trajetosEmpresa?.length,
-            link: "trajetos"
+            //link: "trajetos"
         },
         {
             id: 3,
             title: "Funcionários",
             size: funcionarios?.length,
-            link: "funcionarios"
+            //link: "funcionarios"
         }
     ]
-
-    const handleSearch = async (e: FormEvent) => {
-
-        e.preventDefault();
-
-        toast.success(search)
-    }
 
     return (
         <>
             <div className="flex flex-col md:gap-4 gap-2 w-full overflow-y-auto p-2 lg:p-2 lg:px-4 h-[100vh]">
 
-               
+                <div className="flex flex-col lg:flex-row justify-start lg:my-4 lg:items-center items-start lg:gap-8 md:gap-6 gap-4 w-full">
+                    {empresa &&
+                        <h1 className='font-bold text-lg'>{empresa.nome}</h1>
+                    }
+                </div>
 
                 <div className="h-full flex w-full flex-col xl:flex-row md:gap-4 gap-2 rounded-2xl">
 
@@ -170,11 +209,11 @@ function Admin() {
                                                             <div className='flex justify-between px-4 py-2'>
                                                                 <span
                                                                     className={`font-semibold 
-                                                                ${reserva.status_reserva.toLocaleLowerCase() === "confirmada"
+                                                        ${reserva.status_reserva.toLocaleLowerCase() === "confirmada"
                                                                             ? "text-green-600"
                                                                             : reserva.status_reserva.toLocaleLowerCase() === "pendente" ? "text-orange-400" : "text-red-600"
                                                                         }
-                                                            `}
+                                                    `}
                                                                 >{reserva.status_reserva}</span>
 
                                                                 {reserva.status_reserva.toLocaleLowerCase() !== "confirmada" &&
@@ -232,7 +271,9 @@ function Admin() {
                 </div>
             </div>
         </>
+
+
     );
 }
 
-export default Admin;
+export default Employee;

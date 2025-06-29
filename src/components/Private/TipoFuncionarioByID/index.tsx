@@ -2,32 +2,21 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../services/apiClient";
 import { ErrorResponse } from "../../../App";
+import { TipoFuncionarioProps } from "../../../pages/Private/Dashboard/TiposFuncionarios";
 
-export type TrajetoProps = {
-    id_trajeto: number;
-    id_partida: number;
-    partida: string;
-    destino: string;
-    id_destino: number;
-    lotacao: number;
-    preco: number;
-    percentual_parcela_inicial: number;
-    criacao: string;
-};
 
-interface TrajetoByIDProps {
-    id_trajeto: number;
-}
 
-export function TrajetoByID({ id_trajeto }: TrajetoByIDProps) {
 
-    const [trajeto, setTrajeto] = useState<TrajetoProps | null>(null);
+
+export function TipoFuncionarioByID({ id_tipo_funcionario }: TipoFuncionarioProps) {
+    const [tipoFuncionario, setTipoFuncionario] = useState<TipoFuncionarioProps | null>(null);
 
     useEffect(() => {
         const fetchDados = async () => {
             try {
-                const response = await api.get("/trajetos/" + id_trajeto);
-                setTrajeto(response.data);
+                const response = await api.get("/tipos-funcionario/" + id_tipo_funcionario);
+                console.log(response.data);
+                setTipoFuncionario(response.data);
             } catch (error) {
                 const err = error as ErrorResponse;
                 if (err?.response?.data?.erro) {
@@ -39,12 +28,12 @@ export function TrajetoByID({ id_trajeto }: TrajetoByIDProps) {
             }
         };
         fetchDados();
-    }, [id_trajeto]);
+    }, [id_tipo_funcionario]);
 
     return (
         <div>
-            {trajeto ?
-                <p className="px-4 py-2">{trajeto.partida} → {trajeto.destino}</p>
+            {tipoFuncionario ?
+                <p className="px-4 py-2">{tipoFuncionario.descricao}</p>
                 :
                 <p></p>
             }

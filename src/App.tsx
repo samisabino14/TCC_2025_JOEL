@@ -29,6 +29,8 @@ import { Promocoes } from './pages/Private/Dashboard/Promocoes';
 import { TiposSuporte } from './pages/Private/Dashboard/TiposSuporte';
 import { Suporte } from './pages/Private/Dashboard/Suporte';
 import { Pagamentos } from './pages/Private/Dashboard/Pagamentos';
+import Employee from './pages/Private/Employee';
+import Profile from './pages/Private/Profile';
 
 export interface ErrorResponse {
   response?: {
@@ -83,9 +85,11 @@ function App() {
             <Route path='/dashboard/administrador/horarios-trajeto' element={<HorariosTrajeto />} />
             <Route path='/dashboard/administrador/reservas' element={<Reservas />} />
             <Route path='/dashboard/administrador/configuracoes' element={<Configuracoes />} />
-            <Route path='/dashboard/gestor' element={<Manager />} />
+            <Route path='/dashboard/funcionario' element={<Employee />} />
+            <Route path='/dashboard/funcionario/perfil' element={<Profile />} />
+            
           </Route>
-          TiposSuporte
+
           <Route path='/dashboard/utilizador' element={<Utilizador />} />
 
           <Route path="/dashboard" element={<Rotas />}>

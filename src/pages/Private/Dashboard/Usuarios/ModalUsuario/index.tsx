@@ -5,14 +5,21 @@ import { CountriesProps, Locality } from "../../../../Guest/Register";
 import { ErrorResponse } from "../../../../../App";
 import { api } from "../../../../../services/apiClient";
 import toast from "react-hot-toast";
+import { TipoUsuarioProps } from "../../TipoUsuario";
 
 
 type ModalProps = {
   usuario: UsuarioProps | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (usuarioAtualizado: UsuarioProps) => void;
+  onSave: (usuarioAtualizado: UsuarioProps, selectedCountry: CountryProps | null, selectedNationality: CountryProps | null) => void;
 };
+
+export interface CountryProps {
+  name: string;
+  code: string;
+  flag: string
+}
 
 export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, onSave }) => {
 
@@ -28,17 +35,19 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
     genero: "",
     data_nascimento: "",
     id_usuario: 0,
-    tipo_usuario: "",
+    tipo_usuario: 0,
   });
+
   const [countries, setCountries] = useState<CountriesProps[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<{ name: string; code: string; flag: string } | null>(null);
-  const [selectedNationality, setSelectedNationality] = useState<{ name: string; code: string; flag: string } | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<CountryProps | null>(null);
+  const [selectedNationality, setSelectedNationality] = useState<CountryProps | null>(null);
   const [isOpen2, setIsOpen2] = useState(false);
   const [isOpenNacionality, setIsOpenNacionality] = useState(false);
   const [provinces, setProvinces] = useState<Locality[]>([]);
   const [municipalities, setMunicipalities] = useState<Locality[]>([]);
   const [provinceSelected, setProvinceSelected] = useState<string | null>(provinces[0]?.id_localidade);
-  const [localityId, setLocalityId] = useState("");
+  const [localityId, setLocalityId] = useState(0);
+  const [tiposUsuario, setTiposUsuario] = useState<TipoUsuarioProps[]>([]);
 
 
   useEffect(() => {
@@ -57,7 +66,7 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
         genero: "",
         data_nascimento: "",
         id_usuario: 0,
-        tipo_usuario: "",
+        tipo_usuario: 0,
       }); // Se for novo usuário, deixa os campos vazios
     }
   }, [usuario]);
@@ -91,7 +100,7 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
   useEffect(() => {
     if (usuario !== null) return;
 
-    setLocalityId(municipalities[0]?.id_localidade)
+    setLocalityId(Number(municipalities[0]?.id_localidade))
   }, [municipalities, usuario]);
 
   useEffect(() => {
@@ -101,7 +110,7 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
 
       api.get(`/localidades/com/localidades/${provinceSelected}`)
         .then((response) => {
-          setMunicipalities(response.data)
+          setMunicipalities(response.data);
         }).catch((error) => {
           const err = error as ErrorResponse;
 
@@ -124,6 +133,18 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
     }
   }, [provinceSelected, usuario])
 
+  useEffect(() => {
+    const carregarTiposUsuario = async () => {
+      try {
+        const response = await api.get("/tipos-usuario");
+        setTiposUsuario(response.data);
+      } catch (error) {
+        toast.error("Erro ao carregar tipos de funcionário.");
+      }
+    };
+    carregarTiposUsuario();
+  }, []);
+
   if (!isOpen) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -131,8 +152,9 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
   };
 
   const handleSubmit = () => {
-    onSave(dadosUsuario);
-    onClose();
+    dadosUsuario.localidade = localityId;
+    onSave(dadosUsuario, selectedCountry, selectedNationality);
+    //onClose();
   };
 
 
@@ -270,7 +292,9 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
           </div>
 
           <label className="block">
-            <span className="text-gray-700">Tipo de Usuário</span>
+            <span className="text-gray-700">Tipo de usuário</span>
+            {/*
+            
             <select
               name="tipo_usuario"
               value={dadosUsuario.tipo_usuario}
@@ -279,8 +303,21 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
             >
               <option value="">Selecione...</option>
               <option value="Usuário">Usuário</option>
-              <option value="Gestor">Gestor</option>
+              <option value="Funcionário">Funcionário</option>
               <option value="Administrador">Administrador</option>
+            </select>
+            */}
+
+            <select name="" id="" 
+              value={dadosUsuario.tipo_usuario}
+            
+            className="border px-4 p-3 rounded-lg w-full bg-white" onChange={(e) => dadosUsuario.tipo_usuario = Number(e.target.value)}>
+              <option
+                disabled
+              >Selecione o tipo de Usuário</option>
+              {tiposUsuario?.map((usuario, index) => (
+                <option key={index} value={usuario.id_tipo_usuario}>{usuario.descricao}</option>
+              ))}
             </select>
           </label>
 
@@ -300,7 +337,7 @@ export const ModalUsuario: React.FC<ModalProps> = ({ usuario, isOpen, onClose, o
               {provinceSelected && municipalities.length > 0 ?
                 <div>
                   <label htmlFor="">Município <span className='text-red-500 font-bold text-base'>*</span> </label>
-                  <select name="" id="" className="border px-4 p-3 rounded-lg w-full bg-white" onChange={(e) => setLocalityId(e.target.value)}>
+                  <select name="" id="" className="border px-4 p-3 rounded-lg w-full bg-white" onChange={(e) => setLocalityId(Number(e.target.value))}>
                     <option value="" disabled>Selecione o município</option>
                     {municipalities?.map((municipe, index) => (
                       <option key={index} value={municipe.id_localidade}>{municipe.nome}</option>

@@ -106,7 +106,7 @@ export function Reservas() {
                                         <td className="font-semibold py-2 border"> <UsuarioByID id_usuario={reserva.id_usuario} /></td>
                                         <td className="font-semibold py-2 border"> <TrajetoByID id_trajeto={reserva.id_trajeto} /></td>
                                         <td className="px-6 py-3 border">{reserva.id_funcionario}</td>
-                                        <td className={`px-6 py-3 border font-semibold ${reserva.status_reserva.toLowerCase() === "confirmado" ? "text-green-600" : reserva.status_reserva.toLowerCase() === "pendente" ? "text-orange-400" : "text-red-600"}`}>{reserva.status_reserva}</td>
+                                        <td className={`px-6 py-3 border font-semibold ${reserva.status_reserva.toLowerCase() === "confirmada" ? "text-green-600" : reserva.status_reserva.toLowerCase() === "pendente" ? "text-orange-400" : "text-red-600"}`}>{reserva.status_reserva}</td>
                                         <td className="px-6 py-3 border text-gray-500">{new Date(reserva.criacao).toLocaleDateString()}</td>
                                         <td className="px-6 py-3 border flex gap-2">
                                             <button onClick={() => handleEdit(reserva.id_reserva)} className="text-blue-600 hover:text-blue-800">

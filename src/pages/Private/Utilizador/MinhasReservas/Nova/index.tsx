@@ -54,8 +54,6 @@ export function Nova() {
             try {
                 const response = await api.get(`/horarios-trajeto/${id_horario}`);
                 setTrajeto(response.data)
-                console.log('\n\nresponse.data')
-                console.log(response.data)
 
             } catch (error) {
                 const err = error as ErrorResponse;

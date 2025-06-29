@@ -43,7 +43,7 @@ export function UsuarioByID({ id_usuario }: UsuarioByIDProps) {
             }
         };
         fetchDados();
-    }, []);
+    }, [id_usuario]);
 
     return (
         <div>

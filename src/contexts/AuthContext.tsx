@@ -158,7 +158,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 toast.error(err.response.data.mensagem);
             }
             else {
-                console.log(error)
                 toast.error("Falha na conexão de rede.");
             }
         }

@@ -3,6 +3,8 @@ import { api } from "../../../../services/apiClient";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { ModalFuncionario } from "./ModalFuncionario";
+import { UsuarioByID } from "../../../../components/Private/UsuarioByID";
+import { TipoFuncionarioByID } from "../../../../components/Private/TipoFuncionarioByID";
 
 export type FuncionarioProps = {
     id_funcionario: number;
@@ -27,6 +29,7 @@ export function Funcionarios() {
         try {
             const response = await api.get(`/funcionarios`);
             setFuncionarios(response.data);
+            console.log(response.data);
         } catch (error) {
             toast.error("Falha ao carregar funcionários.");
         }
@@ -80,8 +83,8 @@ export function Funcionarios() {
                             funcionarios.map((funcionario, index) => (
                                 <tr key={funcionario.id_funcionario} className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-gray-200`}>
                                     <td className="px-6 py-3 border">{funcionario.id_funcionario}</td>
-                                    <td className="px-6 py-3 border font-semibold">{funcionario.usuario}</td>
-                                    <td className="px-6 py-3 border">{funcionario.tipo_funcionario}</td>
+                                    <td className="px-6 py-3 border font-semibold"><UsuarioByID id_usuario={funcionario.id_usuario} /></td>
+                                    <td className="px-6 py-3 border"><TipoFuncionarioByID id_tipo_funcionario={funcionario.id_tipo_funcionario} /></td>
                                     <td className="px-6 py-3 border">{new Date(funcionario.criacao).toLocaleDateString()}</td>
                                     <td className="px-6 py-3 border flex space-x-2">
                                         <button onClick={() => handleEdit(funcionario.id_funcionario)} className="text-blue-600 hover:text-blue-800">
