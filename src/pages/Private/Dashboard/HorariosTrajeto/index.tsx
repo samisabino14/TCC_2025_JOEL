@@ -22,6 +22,7 @@ export function HorariosTrajeto() {
         const fetchHorarios = async () => {
             try {
                 const response = await api.get("/horarios-trajeto");
+                console.log(response.data);
                 setHorarios(response.data);
             } catch (error) {
                 const err = error as ErrorResponse;
@@ -47,8 +48,11 @@ export function HorariosTrajeto() {
                 );
                 toast.success("Horário atualizado com sucesso!");
             } else {
+                toast(novoHorario.id_trajeto)
+                /*
                 const response = await api.post("/horarios-trajeto", novoHorario);
                 setHorarios([...horarios, response.data]);
+                */
                 toast.success("Horário adicionado com sucesso!");
             }
             setModalAberto(false);

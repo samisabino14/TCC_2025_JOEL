@@ -2,16 +2,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import { HorarioProps } from "../SearchCard";
 import { returnHour } from "../../utils/functions/returnHour";
 import { returnDate } from "../../utils/functions/returnDate";
+import toast from "react-hot-toast";
 
 interface HorarioPopupProps {
     horarios: HorarioProps[];
     onClose: () => void;
-    handleHorarioSelecionado: (horario: number) => void
+    handleHorarioSelecionado: (horario: number, id_empresa: number) => void
 }
 
 export function HorarioPopup({ horarios, handleHorarioSelecionado, onClose }: HorarioPopupProps) {
-
-    
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -33,9 +32,12 @@ export function HorarioPopup({ horarios, handleHorarioSelecionado, onClose }: Ho
                                 <li
                                     key={index}
                                     className="p-3 border hover:bg-gray-100 cursor-pointer rounded-md text-center shadow-md"
-                                    onClick={() => handleHorarioSelecionado(horario.id_horario)}
+                                    onClick={() => {
+                                        //toast(horario.id_empresa.toString())
+                                        handleHorarioSelecionado(horario.id_horario, horario.id_empresa)
+                                    }}
                                 >
-                                    {/*returnDate((horario.data_hora))*/} 
+                                    {/*returnDate((horario.data_hora))*/}
                                     <p className="font-semibold">{returnHour(horario.data_hora)}</p>
                                     <p>{horario.nome} ({horario.endereco})</p>
                                     <p>{Number(horario.preco).toFixed(0)} Kzs</p>

@@ -91,7 +91,7 @@ export function MinhasReservas() {
 
                                     <td
                                         className={`px-4 py-2 border font-semibold 
-                                            ${reserva.status_reserva.toLocaleLowerCase() === "confirmado"
+                                            ${reserva.status_reserva.toLocaleLowerCase() === "confirmada"
                                                 ? "text-green-600"
                                                 : reserva.status_reserva.toLocaleLowerCase() === "pendente" ? "text-orange-400" : "text-red-600"
                                             }

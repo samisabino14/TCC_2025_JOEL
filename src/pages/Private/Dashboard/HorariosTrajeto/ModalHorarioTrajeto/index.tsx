@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { api } from "../../../../../services/apiClient";
 
 type TrajetoProps = {
-  id_trajeto: number;
+  id_trajeto_empresa: number;
   id_partida: number;
   id_destino: number;
   partida: string;
@@ -14,7 +14,7 @@ type TrajetoProps = {
 
 type HorarioProps = {
   id_horario?: number;
-  id_trajeto: number;
+  id_trajeto_empresa: number;
   data_hora: string;
   lugares_disponiveis: number;
 };
@@ -27,7 +27,7 @@ type ModalHorarioTrajetoProps = {
 
 export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen, onClose, onSave }) => {
   const [horario, setHorario] = useState<HorarioProps>({
-    id_trajeto: 0,
+    id_trajeto_empresa: 0,
     data_hora: "",
     lugares_disponiveis: 0,
   });
@@ -57,7 +57,7 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
   };
 
   const handleSubmit = () => {
-    if (!horario.id_trajeto || !horario.data_hora || !horario.lugares_disponiveis) {
+    if (!horario.id_trajeto_empresa || !horario.data_hora || !horario.lugares_disponiveis) {
       toast.error("Preencha todos os campos!");
       return;
     }
@@ -74,14 +74,14 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
           <label className="block">
             <span className="text-gray-700">Trajeto</span>
             <select
-              name="id_trajeto"
-              value={horario.id_trajeto}
+              name="id_trajeto_empresa"
+              value={horario.id_trajeto_empresa}
               onChange={handleChange}
               className="w-full p-2 border rounded mt-1"
             >
               <option value="">Selecione um trajeto</option>
               {trajetos.map((trajeto) => (
-                <option key={trajeto.id_trajeto} value={trajeto.id_trajeto}>
+                <option key={trajeto.id_trajeto_empresa} value={trajeto.id_trajeto_empresa}>
                   {`${trajeto.partida} → ${trajeto.destino}`}
                 </option>
               ))}

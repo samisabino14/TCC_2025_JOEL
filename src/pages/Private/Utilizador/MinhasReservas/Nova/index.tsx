@@ -36,7 +36,7 @@ type bonusProps = {
 export function Nova() {
     const navigate = useNavigate()
     const { user } = useContext(AuthContext);
-    const { id_trajeto_empresa_selecionado, id_horario } = useParams();
+    const { id_trajeto_empresa_selecionado, id_horario, id_empresa } = useParams();
     const [trajeto, setTrajeto] = useState<TrajetoProps | null>(null);
     const [bonus, setBonus] = useState<bonusProps | null>(null);
     const [valorPorPagar, setValorPorPagar] = useState<string>("");
@@ -45,6 +45,7 @@ export function Nova() {
     const [metodoPagamento, setMetodoPagamento] = useState<string>("referencia");
 
     useEffect(() => {
+
         const fetchDados = async () => {
 
             if (!id_horario) {
@@ -97,14 +98,23 @@ export function Nova() {
     const handleReserva = async () => {
 
         try {
+            console.log({
+                id_usuario: user?.id_usuario,
+                id_trajeto: Number(id_trajeto_empresa_selecionado),
+                id_empresa: Number(id_empresa),
+                id_horario: Number(id_horario)
+            })
 
-            if (!user?.id_usuario || !id_trajeto_empresa_selecionado) return
-
-            //toast(user?.id_usuario.toString())
-
+            if (!user?.id_usuario || !id_trajeto_empresa_selecionado || !id_empresa || !id_horario) {
+                toast.error("Preencha todos os campos.");
+                return
+            }
+            
             await api.post(`/reservas`, {
                 id_usuario: user?.id_usuario,
-                id_trajeto: id_trajeto_empresa_selecionado
+                id_trajeto: Number(id_trajeto_empresa_selecionado),
+                id_empresa: Number(id_empresa),
+                id_horario: Number(id_horario)
             });
 
             toast.success("Reserva criada com sucesso.")

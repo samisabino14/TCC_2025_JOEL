@@ -144,10 +144,10 @@ export default function SearchCard() {
     }
   }
 
-  const handleHorarioSelecionado = (id_horario: number) => {
-
+  const handleHorarioSelecionado = (id_horario: number, id_empresa: number) => {
+    
     if (user?.token) {
-      navigate(`reservas/nova/${trajetoEmpresaSelecionado}/${id_horario}`)
+      navigate(`reservas/nova/${trajetoEmpresaSelecionado}/${id_horario}/${id_empresa}`)
     } else {
       navigate('/login');
       toast.success("Faça o login primeiro");
@@ -193,7 +193,7 @@ export default function SearchCard() {
                               handlePartidaSelecionada(item)
                             }}
                           >
-                            {item.partida} {item.id_trajeto}
+                            {item.partida}
                           </p>
                         ))}
                       </>
@@ -259,7 +259,7 @@ export default function SearchCard() {
               />
             </div>
           </div>
-          <button onClick={handleSearch} className="font-semibold w-full bg-orange-500 text-white p-3 rounded-lg hover:bg-orange-600 transition">
+          <button onClick={handleSearch} className="font-semibold w-full bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
             Buscar
           </button>
         </div>

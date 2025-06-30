@@ -94,7 +94,7 @@ function App() {
 
           <Route path="/dashboard" element={<Rotas />}>
             <Route path='/dashboard/utilizador/reservas' element={<MinhasReservas />} />
-            <Route path='/dashboard/utilizador/reservas/nova/:id_trajeto_empresa_selecionado/:id_horario' element={<Nova />} />
+            <Route path='/dashboard/utilizador/reservas/nova/:id_trajeto_empresa_selecionado/:id_horario/:id_empresa' element={<Nova />} />
           </Route>
 
         </Route>

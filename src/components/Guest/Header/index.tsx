@@ -71,7 +71,7 @@ export const Header = () => {
                         <Link to='/dashboard/utilizador/reservas'>
                             <span className='text-white mt-20 p-5'>Minhas reservas</span>
                         </Link>
-                        <div onClick={signOut} className='hidden lg:block bg-gradient-to-r font-semibold hover:scale-105 duration-500 cursor-pointer from-red-500 to-red-400 py-2 px-8 rounded-lg text-white text-sm'>
+                        <div onClick={signOut} className='block bg-gradient-to-r font-semibold hover:scale-105 duration-500 cursor-pointer from-red-500 to-red-400 py-2 px-8 rounded-lg text-white text-sm'>
                             <p>Sair</p>
                         </div>
 
