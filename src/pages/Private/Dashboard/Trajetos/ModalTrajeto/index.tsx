@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../../services/apiClient";
+import { EmpresaProps } from "../../Funcionarios/ModalFuncionario";
 
 interface LocalidadeProps {
     id_localidade: number;
@@ -8,6 +9,7 @@ interface LocalidadeProps {
 }
 
 interface TrajetoProps {
+    id_empresa: number,
     id_partida: number;
     id_destino: number;
     lotacao: number;
@@ -23,7 +25,10 @@ type ModalTrajetoProps = {
 
 export const ModalTrajeto: React.FC<ModalTrajetoProps> = ({ isOpen, onClose, onSave }) => {
     const [localidades, setLocalidades] = useState<LocalidadeProps[]>([]);
+    const [idEmpresa, setIdEmpresa] = useState(0);
+    const [empresas, setEmpresas] = useState<EmpresaProps[]>([]);
     const [novoTrajeto, setNovoTrajeto] = useState<TrajetoProps>({
+        id_empresa: 0,
         id_partida: 0,
         id_destino: 0,
         lotacao: 0,
@@ -36,7 +41,13 @@ export const ModalTrajeto: React.FC<ModalTrajetoProps> = ({ isOpen, onClose, onS
         const fetchLocalidades = async () => {
             try {
                 const response = await api.get("/localidades");
+                const responseEmpresas = await api.get("/empresas");
+
                 setLocalidades(response.data);
+
+                setEmpresas(responseEmpresas.data);
+                console.log(responseEmpresas.data);
+
             } catch (error) {
                 toast.error("Erro ao carregar localidades.");
             }
@@ -51,6 +62,7 @@ export const ModalTrajeto: React.FC<ModalTrajetoProps> = ({ isOpen, onClose, onS
 
     const handleSubmit = async () => {
         try {
+            novoTrajeto.id_empresa = idEmpresa;
             await onSave(novoTrajeto);
             onClose();
         } catch (error) {
@@ -64,6 +76,23 @@ export const ModalTrajeto: React.FC<ModalTrajetoProps> = ({ isOpen, onClose, onS
                 <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                     <h2 className="text-xl font-semibold mb-4">Criar Novo Trajeto</h2>
                     <div className="space-y-3">
+
+                        <label className="block">
+                            <span className="text-gray-700">Empresa</span>
+                            <select
+                                value={idEmpresa}
+                                onChange={(e) => setIdEmpresa(Number(e.target.value))}
+                                //onChange={handleChange}
+                                className="w-full p-2 border rounded mt-1"
+                            >
+                                <option value={0} disabled>Selecione uma empresa</option>
+                                {empresas.map((empresa) => (
+                                    <option key={empresa.id_empresa} value={empresa.id_empresa}>
+                                        {empresa.nome}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
                         {/* Select para escolher a localidade de partida */}
                         <label className="block">
                             <span className="text-gray-700">Partida</span>

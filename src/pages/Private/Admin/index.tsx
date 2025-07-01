@@ -62,7 +62,7 @@ function Admin() {
         };
 
         fetchDados();
-    }, [user])
+    }, [user, alterado])
 
     const cards = [
         {

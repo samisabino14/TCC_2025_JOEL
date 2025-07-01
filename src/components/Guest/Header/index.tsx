@@ -3,6 +3,7 @@ import { FiMenu } from 'react-icons/fi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
+import { BotaoSuporte } from '../../../pages/Private/Utilizador/BotaoSuporte';
 
 export const Header = () => {
 
@@ -68,6 +69,7 @@ export const Header = () => {
                     </div>
                     :
                     <div className='flex items-center gap-10'>
+                        <BotaoSuporte />
                         <Link to='/dashboard/utilizador/reservas'>
                             <span className='text-white mt-20 p-5'>Minhas reservas</span>
                         </Link>

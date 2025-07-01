@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { api } from "../../../../../services/apiClient";
-
-type TrajetoProps = {
-  id_trajeto_empresa: number;
-  id_partida: number;
-  id_destino: number;
-  partida: string;
-  destino: number;
-  lotacao: number;
-  preco: number;
-};
+import { TrajetoEmpresasProps } from "../../../Utilizador";
 
 type HorarioProps = {
   id_horario?: number;
   id_trajeto_empresa: number;
   data_hora: string;
-  lugares_disponiveis: number;
 };
 
 type ModalHorarioTrajetoProps = {
@@ -29,10 +19,9 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
   const [horario, setHorario] = useState<HorarioProps>({
     id_trajeto_empresa: 0,
     data_hora: "",
-    lugares_disponiveis: 0,
   });
 
-  const [trajetos, setTrajetos] = useState<TrajetoProps[]>([]);
+  const [trajetosEmpresas, setTrajetosEmpresas] = useState<TrajetoEmpresasProps[]>([]);
 
   // Buscar trajetos ao abrir o modal
   useEffect(() => {
@@ -43,8 +32,10 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
 
   const fetchTrajetos = async () => {
     try {
-      const response = await api.get("/trajetos");
-      setTrajetos(response.data);
+      const response = await api.get('/trajetos-empresas');
+      setTrajetosEmpresas(response.data);
+
+      console.log(response.data);
     } catch (error) {
       toast.error("Erro ao carregar os trajetos.");
     }
@@ -53,11 +44,16 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
   if (!isOpen) return null;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setHorario({ ...horario, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setHorario((prev) => ({
+      ...prev,
+      [name]: name === "id_trajeto_empresa" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = () => {
-    if (!horario.id_trajeto_empresa || !horario.data_hora || !horario.lugares_disponiveis) {
+    if (!horario.id_trajeto_empresa || !horario.data_hora) {
       toast.error("Preencha todos os campos!");
       return;
     }
@@ -80,9 +76,9 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
               className="w-full p-2 border rounded mt-1"
             >
               <option value="">Selecione um trajeto</option>
-              {trajetos.map((trajeto) => (
+              {trajetosEmpresas.map((trajeto) => (
                 <option key={trajeto.id_trajeto_empresa} value={trajeto.id_trajeto_empresa}>
-                  {`${trajeto.partida} → ${trajeto.destino}`}
+                  {`${trajeto.partida} → ${trajeto.destino} (${trajeto.nome_empresa})`}
                 </option>
               ))}
             </select>
@@ -100,17 +96,7 @@ export const ModalHorarioTrajeto: React.FC<ModalHorarioTrajetoProps> = ({ isOpen
             />
           </label>
 
-          {/* Campo para os lugares disponíveis */}
-          <label className="block">
-            <span className="text-gray-700">Lugares Disponíveis</span>
-            <input
-              type="number"
-              name="lugares_disponiveis"
-              value={horario.lugares_disponiveis}
-              onChange={handleChange}
-              className="w-full p-2 border rounded mt-1"
-            />
-          </label>
+
         </div>
 
         <div className="mt-4 flex justify-end space-x-3">

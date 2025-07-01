@@ -5,8 +5,10 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { formatarNumero } from "../../Utilizador/MinhasReservas/Nova";
 import { ModalTrajeto } from "./ModalTrajeto";
 import { ErrorResponse } from "../../../../App";
+import { TrajetoEmpresasProps } from "../../Utilizador";
 
 export type TrajetoProps = {
+    id_empresa: number;
     id_trajeto: number;
     id_partida: number;
     partida: string;
@@ -19,14 +21,16 @@ export type TrajetoProps = {
 };
 
 export function Trajetos() {
-    const [trajetos, setTrajetos] = useState<TrajetoProps[]>([]);
+    const [trajetosEmpresas, setTrajetosEmpresas] = useState<TrajetoEmpresasProps[]>([]);
+
     const [modalAberto, setModalAberto] = useState(false);
 
     useEffect(() => {
         const fetchDados = async () => {
             try {
-                const response = await api.get("/trajetos");
-                setTrajetos(response.data);
+                const response = await api.get('/trajetos-empresas');
+
+                setTrajetosEmpresas(response.data);
             } catch (error) {
                 const err = error as ErrorResponse;
                 if (err?.response?.data?.erro) {
@@ -47,13 +51,15 @@ export function Trajetos() {
     async function handleSaveTrajeto(novoTrajeto: Omit<TrajetoProps, "id_trajeto" | "partida" | "destino" | "criacao" | "atualizacao">) {
         try {
             const trajetoFormatado = {
+                id_empresa: Number(novoTrajeto.id_empresa),
                 id_partida: Number(novoTrajeto.id_partida),
                 id_destino: Number(novoTrajeto.id_destino),
                 lotacao: Number(novoTrajeto.lotacao),
                 preco: parseFloat(novoTrajeto.preco.toString()).toFixed(2), // Garante que seja enviado como string decimal
                 percentual_parcela_inicial: parseFloat(novoTrajeto.percentual_parcela_inicial.toString()).toFixed(2),
             };
-            await api.post("/trajetos", trajetoFormatado);
+            //console.log(trajetoFormatado)
+            await api.post("/trajetos-empresas", trajetoFormatado);
             toast.success("Trajeto criado com sucesso!");
             //return response.data;
         } catch (error) {
@@ -67,7 +73,7 @@ export function Trajetos() {
         if (window.confirm("Tem certeza que deseja excluir este trajeto?")) {
             try {
                 await api.delete(`/trajetos/${id}`);
-                setTrajetos(trajetos.filter((trajeto) => trajeto.id_trajeto !== id));
+                setTrajetosEmpresas(trajetosEmpresas.filter((trajeto) => trajeto.id_trajeto !== id));
                 toast.success("Trajeto excluído com sucesso!");
             } catch (error) {
                 const err = error as ErrorResponse;
@@ -104,8 +110,9 @@ export function Trajetos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {trajetos.length > 0 ? (
-                            trajetos.map((trajeto, index) => (
+
+                        {trajetosEmpresas.length > 0 ? (
+                            trajetosEmpresas.map((trajeto, index) => (
                                 <tr
                                     key={trajeto.id_trajeto}
                                     className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-gray-200 transition`}

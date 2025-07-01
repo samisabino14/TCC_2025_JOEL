@@ -15,6 +15,7 @@ import { TrajetoByID } from '../../../components/Private/TrajetoByID';
 import { UsuarioByID } from '../../../components/Private/UsuarioByID';
 import { Link } from 'react-router-dom';
 import { EmpresaProps } from '../Dashboard/Funcionarios/ModalFuncionario';
+import { BotaoSuporte } from '../Utilizador/BotaoSuporte';
 
 interface Funcionario {
     id_funcionario: number,
@@ -133,7 +134,12 @@ function Employee() {
 
                 <div className="flex flex-col lg:flex-row justify-start lg:my-4 lg:items-center items-start lg:gap-8 md:gap-6 gap-4 w-full">
                     {empresa &&
-                        <h1 className='font-bold text-lg'>{empresa.nome}</h1>
+                        <>
+
+                            <BotaoSuporte />
+                            <h1 className='font-bold text-lg'>{empresa.nome}</h1>
+
+                        </>
                     }
                 </div>
 

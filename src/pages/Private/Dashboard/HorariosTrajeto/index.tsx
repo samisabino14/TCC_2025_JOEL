@@ -7,6 +7,7 @@ import { ErrorResponse } from "../../../../App";
 export type HorarioTrajetoProps = {
     id_horario: number;
     id_trajeto: number;
+    nome: string;
     partida: string;
     destino: string;
     data_hora: string;
@@ -17,13 +18,15 @@ export function HorariosTrajeto() {
     const [horarios, setHorarios] = useState<HorarioTrajetoProps[]>([]);
     const [modalAberto, setModalAberto] = useState(false);
     const [horarioParaEditar, setHorarioParaEditar] = useState<HorarioTrajetoProps | null>(null);
+    const [alterado, setAlterado] = useState(false);
 
     useEffect(() => {
         const fetchHorarios = async () => {
             try {
                 const response = await api.get("/horarios-trajeto");
-                console.log(response.data);
+
                 setHorarios(response.data);
+                console.log(response.data);
             } catch (error) {
                 const err = error as ErrorResponse;
                 if (err?.response?.data?.erro) {
@@ -35,7 +38,7 @@ export function HorariosTrajeto() {
             }
         };
         fetchHorarios();
-    }, []);
+    }, [alterado]);
 
     const handleSaveHorario = async (novoHorario: Omit<HorarioTrajetoProps, "id_horario">) => {
         try {
@@ -48,11 +51,11 @@ export function HorariosTrajeto() {
                 );
                 toast.success("Horário atualizado com sucesso!");
             } else {
-                toast(novoHorario.id_trajeto)
-                /*
+
                 const response = await api.post("/horarios-trajeto", novoHorario);
-                setHorarios([...horarios, response.data]);
-                */
+                //setHorarios([...horarios, response.data]);
+                setAlterado(!alterado)
+
                 toast.success("Horário adicionado com sucesso!");
             }
             setModalAberto(false);
@@ -102,6 +105,7 @@ export function HorariosTrajeto() {
                     <tr>
                         <th className="px-4 py-2">ID</th>
                         <th className="px-4 py-2">Trajeto</th>
+                        <th className="px-4 py-2">Empresa</th>
                         <th className="px-4 py-2">Data e Hora</th>
                         <th className="px-4 py-2">Lugares Disponíveis</th>
                         <th className="px-4 py-2">Ações</th>
@@ -112,6 +116,7 @@ export function HorariosTrajeto() {
                         <tr key={horario.id_horario} className="border-t">
                             <td className="px-4 py-2">{horario.id_horario}</td>
                             <td className="px-4 py-2">{horario.partida} → {horario.destino}</td>
+                            <td className="px-4 py-2">{horario.nome}</td>
                             <td className="px-4 py-2">{new Date(horario.data_hora).toLocaleString()}</td>
                             <td className="px-4 py-2">{horario.lugares_disponiveis}</td>
                             <td className="px-4 py-2 space-x-2">
