@@ -31,6 +31,7 @@ import { Suporte } from './pages/Private/Dashboard/Suporte';
 import { Pagamentos } from './pages/Private/Dashboard/Pagamentos';
 import Employee from './pages/Private/Employee';
 import Profile from './pages/Private/Profile';
+import { Empresas } from './pages/Private/Dashboard/Empresa';
 
 export interface ErrorResponse {
   response?: {
@@ -79,7 +80,7 @@ function App() {
             <Route path='/dashboard/administrador/trajetos' element={<Trajetos />} />
             <Route path='/dashboard/administrador/bonus' element={<Bonus />} />
             <Route path='/dashboard/administrador/tipos-suporte' element={<TiposSuporte />} />
-            <Route path='/dashboard/administrador/suporte' element={<Suporte />} />
+            <Route path='/dashboard/administrador/empresas' element={<Empresas />} />
             <Route path='/dashboard/administrador/pagamentos' element={<Pagamentos />} />
             <Route path='/dashboard/administrador/promocoes' element={<Promocoes />} />
             <Route path='/dashboard/administrador/horarios-trajeto' element={<HorariosTrajeto />} />

@@ -13,6 +13,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         // Se não há token, redirecione para o login
         if (user && !user?.token) {
             navigate('/login');

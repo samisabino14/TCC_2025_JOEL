@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabela } from "../../../../components/Tabela";
 import { api } from "../../../../services/apiClient";
 import { ErrorResponse } from "../../../../App";
 import toast from "react-hot-toast";
 import { CountryProps, ModalUsuario } from "./ModalUsuario";
-import { AuthContext } from "../../../../contexts/AuthContext";
 
 export type UsuarioProps = {
     id_pessoa: number;
@@ -23,7 +22,6 @@ export type UsuarioProps = {
 
 
 export function Usuarios() {
-    const { signIn } = useContext(AuthContext);
 
     const [usuarios, setUsuarios] = useState<UsuarioProps[]>([]);
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioProps | null>(null);

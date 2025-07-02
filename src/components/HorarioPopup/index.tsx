@@ -1,10 +1,9 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { HorarioProps } from "../SearchCard";
 import { returnHour } from "../../utils/functions/returnHour";
-import { returnDate } from "../../utils/functions/returnDate";
-import toast from "react-hot-toast";
 
-interface HorarioPopupProps {
+
+interface HorarioPopupProps {       
     horarios: HorarioProps[];
     onClose: () => void;
     handleHorarioSelecionado: (horario: number, id_empresa: number) => void

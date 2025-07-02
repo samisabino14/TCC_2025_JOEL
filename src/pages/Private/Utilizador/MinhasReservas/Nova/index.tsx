@@ -75,7 +75,10 @@ export function Nova() {
 
     const handleGetBonus = async () => {
         try {
-            const response = await api.get(`/bonus/${user?.id_usuario}/${id_trajeto_empresa_selecionado}`);
+            console.log(id_trajeto_empresa_selecionado);
+            const responseTrajeto = await api.get(`/trajetos-empresas/${id_trajeto_empresa_selecionado}`);
+
+            const response = await api.get(`/bonus/${user?.id_usuario}/${responseTrajeto.data?.id_trajeto}`);
 
             setBonus(response.data);
 
@@ -109,7 +112,7 @@ export function Nova() {
                 toast.error("Preencha todos os campos.");
                 return
             }
-            
+
             await api.post(`/reservas`, {
                 id_usuario: user?.id_usuario,
                 id_trajeto: Number(id_trajeto_empresa_selecionado),

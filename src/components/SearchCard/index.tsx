@@ -30,6 +30,7 @@ export default function SearchCard() {
   const [partidaSelecionada, setPartidaSelecionada] = useState("");
   const [destinoSelecionado, setDestinoSelecionado] = useState("");
   const [trajetoEmpresaSelecionado, setTrajetoEmpresaSelecionado] = useState<number | null>(null);
+  const [trajetoEmpresaParam, setTrajetoEmpresaParam] = useState<number | null>(null);
   const [date, setDate] = useState("");
   const [destinosFiltrados, setDestinosFiltrados] = useState<string[]>([]);
   const [isFocusedPartida, setIsFocusedPartida] = useState(false);
@@ -105,14 +106,11 @@ export default function SearchCard() {
     }
 
     /*
-    console.log(trajetoEmpresaSelecionado)
 
     const trajetoEncontrado = trajetosEmpresas.find(
       (t) => t.partida === partidaSelecionada && t.destino === destinoSelecionado
     );
 
-    console.log('\n\n\ntrajetoEncontrado')
-    console.log(trajetoEncontrado)
 
     if (!trajetoEncontrado?.id_trajeto) {
       toast.error("Trajeto não encontrado.");
@@ -125,8 +123,12 @@ export default function SearchCard() {
 
       const formattedDate = new Date(date).toISOString().split("T")[0]; // Converte para YYYY-MM-DD
 
-      const response = await api.get(`/horarios-trajeto/${formattedDate}/${trajetoEmpresaSelecionado}`);
-
+      const responseTrajetoEmpresa = await api.get(`/trajetos-empresas/trajeto/${trajetoEmpresaSelecionado}`);
+      if (!responseTrajetoEmpresa.data?.id_trajeto_empresa) {
+        return;
+      }
+      const response = await api.get(`/horarios-trajeto/${formattedDate}/${responseTrajetoEmpresa.data?.id_trajeto_empresa}`);
+      setTrajetoEmpresaParam(Number(responseTrajetoEmpresa.data?.id_trajeto_empresa))
       setHorarios(response.data);
       setIsPopupOpen(true);
 
@@ -145,9 +147,9 @@ export default function SearchCard() {
   }
 
   const handleHorarioSelecionado = (id_horario: number, id_empresa: number) => {
-    
+
     if (user?.token) {
-      navigate(`reservas/nova/${trajetoEmpresaSelecionado}/${id_horario}/${id_empresa}`)
+      navigate(`reservas/nova/${trajetoEmpresaParam}/${id_horario}/${id_empresa}`)
     } else {
       navigate('/login');
       toast.success("Faça o login primeiro");
@@ -189,7 +191,6 @@ export default function SearchCard() {
                             key={index}
                             className="text-xs text-gray-700 p-2 hover:bg-gray-100 cursor-pointer"
                             onMouseDown={() => {
-
                               handlePartidaSelecionada(item)
                             }}
                           >
